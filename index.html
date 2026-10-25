@@ -2,14 +2,29 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#f8fafc">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title id="appTitle"></title>
+
+    <!-- DESKTOP AUTO-REDIRECT SYSTEM -->
+    <!-- আপনি যখন ডেক্সটপের জন্য 'desktop.html' ফাইল আপলোড করবেন, ডেক্সটপ ইউজাররা অটোমেটিক সেখানে চলে যাবে -->
+    <script>
+        (function() {
+            var isDesktop = window.innerWidth >= 1024 && !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isDesktop) {
+                fetch('desktop.html', { method: 'HEAD', cache: 'no-store' })
+                    .then(function(res) {
+                        if (res.ok) window.location.replace('desktop.html');
+                    })
+                    .catch(function() {});
+            }
+        })();
+    </script>
     
-    <!-- PWA Manifest -->
+    <!-- Real PWA Manifest Link -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
     
@@ -34,53 +49,84 @@
             }
         }
     </script>
+
+    <!-- CRITICAL ANTI-FLUTTER CSS (Tailwind লোড হওয়ার আগেই লেআউট স্থির রাখবে) -->
     <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        .hidden { display: none !important; }
+        
         body { 
-            background-color: #e2e8f0; 
-            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
-            background-size: 24px 24px;
-            display: flex; 
-            justify-content: center; 
-            -webkit-tap-highlight-color: transparent; 
+            background-color: #f8fafc; 
             margin: 0; 
+            padding: 0;
             min-height: 100vh; 
+            min-height: 100dvh;
             overflow-x: hidden; 
+            font-family: 'Hind Siliguri', sans-serif;
+            color: #1e293b;
         }
         
+        /* Pure Mobile Container */
         #app-container { 
             width: 100%; 
+            max-width: 480px; 
+            margin: 0 auto;
             background-color: #f8fafc; 
             min-height: 100vh; 
+            min-height: 100dvh;
             position: relative; 
             display: flex; 
             flex-direction: column;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
         }
 
-        /* Responsive Optimization for Tablet & Desktop */
-        @media (min-width: 640px) {
-            body { align-items: center; padding: 20px; }
-            #app-container { 
-                max-width: 620px; 
-                min-height: 88vh; 
-                height: 88vh; 
-                border-radius: 24px; 
-                overflow-y: auto; 
-                border: 6px solid #cbd5e1; 
-            }
+        /* Fixed Header & Logo Slot - রিলোড দিলে ১ পিক্সেলও নড়বে না */
+        #mainHeader {
+            height: 48px;
+            padding: 0 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e2e8f0;
         }
-        @media (min-width: 1024px) {
-            #app-container { 
-                max-width: 960px; 
-                height: 86vh; 
-                border-radius: 28px; 
-                border-width: 7px; 
-            }
+        #brandArea {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 26px;
+        }
+        #logoSlot {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #appLogo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        #appNameHeader {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1;
+            color: #1e293b;
+            margin: 0;
+            white-space: nowrap;
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        #app-container::-webkit-scrollbar { width: 5px; }
-        #app-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
         
         .icon-box { 
             width: 40px; 
@@ -90,78 +136,81 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            transition: all 0.15s ease; 
+            transition: transform 0.15s ease, background-color 0.15s ease; 
             border: 1px solid #e2e8f0; 
             color: #475569; 
             font-size: 15px;
             overflow: hidden;
         }
-        @media (min-width: 768px) {
-            .icon-box { width: 44px; height: 44px; border-radius: 12px; }
-        }
-        @media (hover: hover) { 
-            .cat-item:hover .icon-box { 
-                background: #f1f5f9; 
-                transform: translateY(-2px); 
-                border-color: #cbd5e1;
-            } 
-        }
-        .cat-item:active .icon-box { transform: scale(0.94); background: #e2e8f0; color: #0f172a; }
+        .cat-item:active .icon-box { transform: scale(0.93); background: #e2e8f0; color: #0f172a; }
         
         #extraCategories { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.25s ease-in-out; }
         a, button { -webkit-user-drag: none; outline: none; }
     </style>
 </head>
-<body class="text-slate-800 antialiased font-sans">
+<body class="antialiased">
 
     <div id="app-container">
 
-        <!-- HEADER (কোনো হার্ডকোড করা নাম বা পুরনো লোগো নেই, সম্পূর্ণ ডায়নামিক) -->
-        <header class="flex justify-between items-center px-4 py-2.5 sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-            <div class="flex items-center gap-2 min-h-[24px]">
-                <div id="logoWrapper" class="w-6 h-6 rounded-[6px] flex justify-center items-center overflow-hidden hidden">
-                    <img id="appLogo" src="logo.png" alt="" class="w-full h-full object-cover" onload="document.getElementById('logoWrapper').classList.remove('hidden')" onerror="document.getElementById('logoWrapper').remove()">
+        <!-- HEADER (Zero Layout Shift / Zero Flutter) -->
+        <header id="mainHeader">
+            <div id="brandArea">
+                <div id="logoSlot">
+                    <img id="appLogo" src="logo.png" alt="" onload="this.style.opacity='1'" onerror="this.style.opacity='0'">
                 </div>
-                <h1 id="appNameHeader" class="text-[15px] sm:text-[16px] font-bold tracking-tight text-slate-800"></h1>
+                <h1 id="appNameHeader"></h1>
             </div>
             
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
                 <button id="installBtn" class="hidden items-center gap-1 bg-green-50 text-appGreen font-bold text-[10px] px-2.5 py-1 rounded border border-green-100 active:scale-95 transition">
                     <i class="fa-solid fa-download text-[10px]"></i> ইন্সটল
                 </button>
-                <button onclick="window.location.reload()" class="w-8 h-8 flex justify-center items-center text-slate-400 active:scale-90 transition hover:bg-slate-100 hover:text-slate-600 rounded-full">
+                <button onclick="window.location.reload()" class="w-8 h-8 flex justify-center items-center text-slate-400 active:scale-90 transition rounded-full">
                     <i class="fa-solid fa-rotate-right text-[13px]"></i>
                 </button>
-                <a href="about.html" class="w-8 h-8 flex justify-center items-center text-slate-400 active:scale-90 transition hover:bg-slate-100 hover:text-slate-600 rounded-full">
+                <a href="about.html" class="w-8 h-8 flex justify-center items-center text-slate-400 active:scale-90 transition rounded-full">
                     <i class="fa-solid fa-bars text-[14px]"></i>
                 </a>
             </div>
         </header>
 
-        <main class="px-3 sm:px-4 mt-2.5 sm:mt-3 space-y-3 pb-3 flex-1">
+        <!-- রিলোড দেওয়ার সাথে সাথে ০ মিলিসেকেন্ডে নাম বসিয়ে দেওয়ার ইনস্ট্যান্ট স্ক্রিপ্ট -->
+        <script>
+            (function() {
+                try {
+                    var cached = JSON.parse(localStorage.getItem('dynamic_app_config'));
+                    if (cached && cached.appName) {
+                        document.getElementById('appNameHeader').textContent = cached.appName;
+                        document.getElementById('appTitle').textContent = cached.appName;
+                    }
+                } catch (e) {}
+            })();
+        </script>
+
+        <main class="px-3 mt-2.5 space-y-3 pb-3 flex-1">
             <!-- PRAYER BANNER -->
-            <section class="relative z-30 rounded-xl shadow-sm bg-gradient-to-r from-appGreen to-appGreenLight px-3.5 sm:px-5 py-2.5 sm:py-3.5 flex justify-between items-center">
+            <section class="relative z-30 rounded-xl shadow-sm bg-gradient-to-r from-appGreen to-appGreenLight px-3.5 py-2.5 flex justify-between items-center">
                 <div class="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-                    <i class="fa-solid fa-mosque absolute -bottom-3 -right-2 text-[65px] sm:text-[80px] text-white/10 -rotate-6"></i>
+                    <i class="fa-solid fa-mosque absolute -bottom-3 -right-2 text-[65px] text-white/10 -rotate-6"></i>
                 </div>
                 
                 <div class="flex flex-col flex-1 relative z-10">
-                    <span class="text-[9px] sm:text-[10px] text-green-100 font-medium tracking-wide">পরবর্তী নামাজ:</span>
+                    <span class="text-[9px] text-green-100 font-medium tracking-wide">পরবর্তী নামাজ:</span>
                     <div class="flex items-baseline gap-1 flex-wrap">
-                        <span id="nextPrayerName" class="text-[17px] sm:text-[20px] font-bold text-white leading-none">--</span>
-                        <span id="nextPrayerTime" class="text-[11px] sm:text-[12px] font-mono text-green-200 ml-1">--:--</span>
+                        <span id="nextPrayerName" class="text-[17px] font-bold text-white leading-none">--</span>
+                        <span id="nextPrayerTime" class="text-[11px] font-mono text-green-200 ml-1">--:--</span>
                     </div>
-                    <div class="text-[10px] sm:text-[11px] font-medium text-green-100 mt-0.5 flex items-center gap-1">
+                    <div class="text-[10px] font-medium text-green-100 mt-0.5 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-[9px]"></i>
-                        <span>বাকি: <span id="countdown" class="font-mono font-bold text-yellow-300 text-[11px] sm:text-[12px] ml-0.5">--:--:--</span></span>
+                        <span>বাকি: <span id="countdown" class="font-mono font-bold text-yellow-300 text-[11px] ml-0.5">--:--:--</span></span>
                     </div>
                 </div>
                 
                 <div class="flex flex-col items-end gap-1.5 shrink-0 relative z-10">
                     <div class="relative">
-                        <button id="locBtn" onclick="toggleLocDropdown(event)" class="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-white bg-white/15 hover:bg-white/20 px-2.5 py-1 rounded transition border border-white/20 min-w-[75px] justify-between">
+                        <button id="locBtn" onclick="toggleLocDropdown(event)" class="flex items-center gap-1 text-[10px] font-semibold text-white bg-white/15 px-2.5 py-1 rounded transition border border-white/20 min-w-[70px] justify-between">
                             <i class="fa-solid fa-location-dot text-[8px] text-green-200 pointer-events-none"></i>
-                            <span id="selectedLocText" class="truncate max-w-[60px] pointer-events-none">Dhaka</span>
+                            <span id="selectedLocText" class="truncate max-w-[55px] pointer-events-none">Dhaka</span>
                             <i class="fa-solid fa-chevron-down text-[7px] text-green-100 pointer-events-none"></i>
                         </button>
                         <div id="locDropdown" class="hidden absolute right-0 top-[110%] w-44 bg-white shadow-xl border border-gray-200 rounded-lg p-1.5 z-[100]">
@@ -169,31 +218,31 @@
                             <ul id="locList" class="max-h-36 overflow-y-auto"></ul>
                         </div>
                     </div>
-                    <button onclick="toggleNoti()" class="flex items-center gap-1 text-[9px] sm:text-[10px] font-medium text-white bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded active:scale-95 transition border border-white/10">
+                    <button onclick="toggleNoti()" class="flex items-center gap-1 text-[9px] font-medium text-white bg-white/10 px-2.5 py-1 rounded active:scale-95 transition border border-white/10">
                         <i id="notiIcon" class="fa-regular fa-bell text-[9px]"></i> <span id="notiText">অ্যালার্ম</span>
                     </button>
                 </div>
             </section>
 
-            <!-- CATEGORY GRID (PURE DYNAMIC SHELL) -->
-            <section id="categorySection" class="bg-white border border-slate-100 rounded-xl p-3 sm:p-4 shadow-sm z-10 relative">
-                <div id="mainCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3.5 gap-x-2"></div>
+            <!-- CATEGORY GRID (MOBILE 4-COLUMN DYNAMIC) -->
+            <section class="bg-white border border-slate-100 rounded-xl p-3 shadow-sm z-10 relative">
+                <div id="mainCategoriesGrid" class="grid grid-cols-4 gap-y-3 gap-x-2"></div>
 
                 <div id="extraCategories">
-                    <div id="extraCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3.5 gap-x-2 pt-3.5"></div>
+                    <div id="extraCategoriesGrid" class="grid grid-cols-4 gap-y-3 gap-x-2 pt-3"></div>
                 </div>
 
                 <div class="mt-2.5 justify-center hidden" id="toggleButtonContainer">
-                    <button onclick="toggleCategories()" class="text-[10px] text-slate-500 font-semibold flex items-center gap-1.5 active:scale-95 transition bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 hover:bg-slate-100">
+                    <button onclick="toggleCategories()" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5 active:scale-95 transition bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
                         <span id="toggleText">আরও দেখুন</span> <i id="toggleIcon" class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200"></i>
                     </button>
                 </div>
             </section>
 
-            <!-- MODERN AUDIO PLAYER (PURE DYNAMIC SHELL) -->
-            <section id="audioPlayerSection" style="display: none;" class="bg-white border border-slate-100 rounded-[14px] shadow-sm z-10 relative overflow-hidden flex flex-col">
+            <!-- MODERN AUDIO PLAYER (DYNAMIC) -->
+            <section id="audioPlayerSection" class="hidden bg-white border border-slate-100 rounded-[14px] shadow-sm z-10 relative overflow-hidden flex-col">
                 <div class="flex items-center w-full">
-                    <a id="audioLink" href="#" class="flex items-center gap-2.5 py-2.5 px-3 cursor-pointer hover:bg-slate-50 active:bg-slate-100 transition-colors w-1/2 md:w-auto md:flex-1">
+                    <a id="audioLink" href="#" class="flex items-center gap-2.5 py-2.5 px-3 cursor-pointer active:bg-slate-100 transition-colors w-1/2">
                         <div id="audioIconContainer" class="w-9 h-9 bg-slate-50 border border-slate-100 rounded-full flex justify-center items-center text-appGreen shrink-0 overflow-hidden"></div>
                         <div class="flex flex-col truncate">
                             <span id="audioTitle" class="text-[12px] font-bold text-slate-800 leading-tight truncate"></span>
@@ -201,16 +250,16 @@
                         </div>
                     </a>
                     
-                    <div class="flex items-center justify-end gap-1.5 pr-3 py-2.5 w-1/2 md:w-auto">
-                        <button onclick="skipPlayerAudio(-5)" class="w-8 h-8 flex justify-center items-center text-slate-400 hover:text-slate-800 rounded-full active:scale-90 transition hover:bg-slate-50">
+                    <div class="flex items-center justify-end gap-1.5 pr-3 py-2.5 w-1/2">
+                        <button onclick="skipPlayerAudio(-5)" class="w-8 h-8 flex justify-center items-center text-slate-400 rounded-full active:scale-90 transition">
                             <i class="fa-solid fa-backward-step text-[11px]"></i>
                         </button>
                         
-                        <button onclick="togglePlayerAudio()" class="w-10 h-10 bg-slate-800 text-white rounded-full flex justify-center items-center shadow-md active:scale-90 transition hover:bg-slate-700">
+                        <button onclick="togglePlayerAudio()" class="w-10 h-10 bg-slate-800 text-white rounded-full flex justify-center items-center shadow-md active:scale-90 transition">
                             <i id="playerPlayIcon" class="fa-solid fa-play text-[12px] ml-0.5"></i>
                         </button>
                         
-                        <button onclick="skipPlayerAudio(5)" class="w-8 h-8 flex justify-center items-center text-slate-400 hover:text-slate-800 rounded-full active:scale-90 transition hover:bg-slate-50">
+                        <button onclick="skipPlayerAudio(5)" class="w-8 h-8 flex justify-center items-center text-slate-400 rounded-full active:scale-90 transition">
                             <i class="fa-solid fa-forward-step text-[11px]"></i>
                         </button>
                     </div>
@@ -222,38 +271,28 @@
                 <audio id="asmaulAudioPlayer" preload="none"></audio> 
             </section>
 
-            <!-- DYNAMIC CONTENT FEED (PURE DYNAMIC SHELL) -->
-            <section id="dynamicFeed" class="grid grid-cols-1 md:grid-cols-2 gap-3 z-10 relative"></section>
+            <!-- DYNAMIC CONTENT FEED (MOBILE STACK) -->
+            <section id="dynamicFeed" class="flex flex-col gap-3 z-10 relative"></section>
 
-            <!-- ULTRA MINIMAL FOOTER (PURE DYNAMIC SHELL) -->
-            <footer id="minimalFooter" class="flex justify-center items-center gap-3 pt-3 pb-2 w-full text-[9.5px] font-medium text-slate-400 z-10 relative"></footer>
+            <!-- ULTRA MINIMAL FOOTER -->
+            <footer id="minimalFooter" class="flex justify-center items-center gap-3 pt-3 pb-2 w-full text-[9px] font-medium text-slate-400 z-10 relative"></footer>
         </main>
 
         <!-- PRAYER MODAL -->
         <div id="prayerModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4" onclick="if(event.target === this) closePrayerModal()">
-            <div id="prayerModalContent" class="bg-white rounded-xl p-3.5 w-full max-w-[260px] shadow-xl transform scale-95 transition-transform duration-200 relative">
+            <div id="prayerModalContent" class="bg-white rounded-xl p-3.5 w-full max-w-[250px] shadow-xl transform scale-95 transition-transform duration-200 relative">
                 <div class="text-center mb-2.5 pb-2.5 border-b border-slate-100">
                     <h2 class="text-[13px] font-bold text-appGreen flex justify-center items-center gap-1.5"><i class="fa-solid fa-clock text-[11px]"></i> আজকের সময়সূচী</h2>
                 </div>
                 <div id="modalPrayerList" class="flex flex-col gap-2">
                     <div class="text-center text-slate-400 text-[11px] py-2.5"><i class="fa-solid fa-spinner fa-spin"></i> লোড হচ্ছে...</div>
                 </div>
-                <button onclick="closePrayerModal()" class="mt-3.5 w-full bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold py-2 rounded-md text-[11px] active:scale-95 transition">বন্ধ করুন</button>
+                <button onclick="closePrayerModal()" class="mt-3.5 w-full bg-slate-100 text-slate-700 font-bold py-2 rounded-md text-[11px] active:scale-95 transition">বন্ধ করুন</button>
             </div>
         </div>
-
-        <!-- NON-BLOCKING TOAST -->
-        <div id="appToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] pointer-events-none opacity-0 transition-opacity duration-200 bg-slate-800 text-white text-[11px] px-3.5 py-2 rounded-lg shadow-lg"></div>
     </div>
 
     <script>
-        function showNotice(msg) {
-            const t = document.getElementById('appToast');
-            t.innerText = msg;
-            t.classList.remove('opacity-0');
-            setTimeout(() => t.classList.add('opacity-0'), 3000);
-        }
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -273,14 +312,14 @@
 
         installBtn.addEventListener('click', async () => {
             if (isIos) {
-                showNotice("আইফোনে নিচে 'Share' আইকনে ক্লিক করে 'Add to Home Screen' নির্বাচন করুন।");
+                alert("আইফোনে অ্যাপ ইন্সটল করতে ব্রাউজারের নিচে 'Share' আইকনে ক্লিক করে 'Add to Home Screen' নির্বাচন করুন।");
             } else if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') installBtn.classList.add('hidden');
                 deferredPrompt = null;
             } else {
-                showNotice("ব্রাউজারের মেনু (⋮) থেকে 'Install App' সিলেক্ট করুন।");
+                alert("ব্রাউজারের মেনু (⋮) থেকে 'Install App' বা 'Add to Home screen' সিলেক্ট করুন।");
             }
         });
 
@@ -301,7 +340,7 @@
         function initLocation() {
             document.getElementById('selectedLocText').innerText = currentCity;
             const locList = document.getElementById('locList');
-            locList.innerHTML = bdDistricts.map(city => `<li onclick="selectCity('${city}')" class="text-[11px] font-medium text-slate-700 py-1.5 px-2.5 border-b border-slate-50 hover:bg-slate-100 cursor-pointer">${city}</li>`).join('');
+            locList.innerHTML = bdDistricts.map(city => `<li onclick="selectCity('${city}')" class="text-[11px] font-medium text-slate-700 py-1.5 px-2.5 border-b border-slate-50 active:bg-slate-100 cursor-pointer">${city}</li>`).join('');
         }
 
         function selectCity(city) {
@@ -347,10 +386,10 @@
 
         async function toggleNoti() {
             if (!notiActive) {
-                if (!("Notification" in window)) return showNotice("আপনার ব্রাউজার নোটিফিকেশন সাপোর্ট করে না।");
+                if (!("Notification" in window)) return alert("আপনার ব্রাউজার নোটিফিকেশন সাপোর্ট করে না।");
                 const perm = await Notification.requestPermission();
                 if (perm === "granted") notiActive = true;
-                else return showNotice("অ্যালার্ম পেতে ব্রাউজারের সেটিংস থেকে পারমিশন দিন।");
+                else return alert("অ্যালার্ম পেতে ব্রাউজারের সেটিংস থেকে পারমিশন দিন।");
             } else notiActive = false;
             
             localStorage.setItem('amarDeenBell', notiActive);
@@ -395,7 +434,7 @@
             return `${h < 10 ? '0' + h : h}:${m} ${ampm}`;
         }
 
-        function updatePrayerCountdown() {
+        function updatePrayerTick() {
             if (!prayerTimesData || !prayerTimesData.Fajr) return;
             const now = new Date();
             let nextPrayer = 'Fajr', timeStrForUI = prayerTimesData['Fajr'], nextTime = null;
@@ -448,9 +487,9 @@
 
         function startCalculation() {
             updateModalData();
-            updatePrayerCountdown();
+            updatePrayerTick();
             if (countdownInterval) clearInterval(countdownInterval);
-            countdownInterval = setInterval(updatePrayerCountdown, 1000);
+            countdownInterval = setInterval(updatePrayerTick, 1000);
         }
 
         const modal = document.getElementById('prayerModal');
@@ -504,24 +543,19 @@
             audioEl.currentTime = 0;
         });
 
-        // --- PURE DYNAMIC APP CONFIGURATION (100% Controlled by app-config.json) ---
-        function applyConfigToDOM(config) {
+        // --- PURE DYNAMIC APP CONFIGURATION ---
+        function renderConfig(config) {
             if (!config) return;
 
-            // 1. Setup App Name (কোনো অতিরিক্ত লেখা যোগ করা হয়নি)
             if (config.appName) {
-                document.getElementById('appNameHeader').innerText = config.appName;
-                document.getElementById('appTitle').innerText = config.appName;
+                document.getElementById('appNameHeader').textContent = config.appName;
+                document.getElementById('appTitle').textContent = config.appName;
             }
 
-            // Optional Logo URL from app-config.json if provided
-            if (config.logoUrl) {
-                document.getElementById('appLogo').src = config.logoUrl;
-            }
-
-            // 2. Setup Audio Player
+            const playerSection = document.getElementById('audioPlayerSection');
             if (config.audioPlayer && config.audioPlayer.active) {
-                document.getElementById('audioPlayerSection').style.display = 'flex';
+                playerSection.classList.remove('hidden');
+                playerSection.classList.add('flex');
                 document.getElementById('audioTitle').innerText = config.audioPlayer.title || '';
                 document.getElementById('audioSubtitle').innerText = config.audioPlayer.subtitle || '';
                 
@@ -537,10 +571,10 @@
                 }
                 document.getElementById('audioLink').href = config.audioPlayer.link || '#';
             } else {
-                document.getElementById('audioPlayerSection').style.display = 'none';
+                playerSection.classList.add('hidden');
+                playerSection.classList.remove('flex');
             }
 
-            // 3. Setup Categories
             if (Array.isArray(config.categories)) {
                 const activeCategories = config.categories.filter(c => c.active);
                 let mainHtml = '';
@@ -548,13 +582,13 @@
 
                 activeCategories.forEach((cat, index) => {
                     let iconHtml = cat.iconUrl 
-                        ? `<img src="${cat.iconUrl}" alt="${cat.name}" class="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] object-contain" onerror="this.style.display='none'">` 
+                        ? `<img src="${cat.iconUrl}" alt="${cat.name}" class="w-[22px] h-[22px] object-contain" onerror="this.style.display='none'">` 
                         : `<i class="fa-solid fa-link text-slate-400"></i>`;
 
                     let catHtml = `
                     <a href="${cat.link}" ${cat.onClick ? `onclick="${cat.onClick}"` : ''} class="cat-item flex flex-col items-center gap-1">
                         <div class="icon-box">${iconHtml}</div>
-                        <span class="text-[10px] sm:text-[11px] font-medium text-slate-600 text-center leading-tight">${cat.name}</span>
+                        <span class="text-[10px] font-medium text-slate-600 text-center leading-tight">${cat.name}</span>
                     </a>`;
                     
                     if (index < 8) {
@@ -579,25 +613,21 @@
         }
 
         async function loadAppConfig() {
-            // গতবার লোড হওয়া app-config.json মেমোরিতে থাকলে সাথে সাথে দেখাবে, তাই ১ সেকেন্ডও ফাঁকা থাকবে না
-            const savedConfig = localStorage.getItem('dynamic_app_config');
-            if (savedConfig) {
-                try { applyConfigToDOM(JSON.parse(savedConfig)); } catch (e) {}
+            const cached = localStorage.getItem('dynamic_app_config');
+            if (cached) {
+                try { renderConfig(JSON.parse(cached)); } catch (e) {}
             }
-
             try {
                 const response = await fetch('app-config.json', { cache: 'no-store' });
                 if (!response.ok) return;
                 const config = await response.json();
                 localStorage.setItem('dynamic_app_config', JSON.stringify(config));
-                applyConfigToDOM(config);
-            } catch (error) {
-                console.log("Error loading app config", error);
-            }
+                renderConfig(config);
+            } catch (error) {}
         }
 
-        // --- PURE DYNAMIC FEED SYSTEM (100% Controlled by content.json) ---
-        function applyFeedToDOM(data) {
+        // --- PURE DYNAMIC FEED SYSTEM ---
+        function renderFeed(data) {
             if (!Array.isArray(data)) return;
             const feedContainer = document.getElementById('dynamicFeed');
             const footerContainer = document.getElementById('minimalFooter');
@@ -610,19 +640,18 @@
                 
                 if (item.type === 'footer-links') {
                     footerHtml = `
-                        <a href="${item.nameUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.nameText}</a>
+                        <a href="${item.nameUrl}" target="_blank" class=" underline underline-offset-2">${item.nameText}</a>
                         <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                        <a href="${item.sourceUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.sourceText}</a>
+                        <a href="${item.sourceUrl}" target="_blank" class="underline underline-offset-2">${item.sourceText}</a>
                     `;
                     return; 
                 }
 
-                let colSpanClass = (item.type === 'notice' || item.type === 'video' || item.type === 'playlist' || item.type === 'video-grid' || item.type === 'image-grid' || item.type === 'ramadan') ? 'md:col-span-2' : '';
-                feedHtml += `<div class="${colSpanClass} h-full">`;
+                feedHtml += `<div class="w-full">`;
 
                 if (item.type === 'notice') {
                     feedHtml += `
-                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 relative overflow-hidden h-full flex flex-col justify-center shadow-sm">
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 relative overflow-hidden flex flex-col justify-center shadow-sm">
                         <div class="flex items-start gap-2.5 relative z-10">
                             <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex justify-center items-center shrink-0 mt-0.5">
                                 <i class="fa-solid ${item.icon || 'fa-bullhorn'} text-[13px]"></i>
@@ -636,40 +665,40 @@
                 }
                 else if (item.type === 'hadith') {
                     feedHtml += `
-                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm flex flex-col">
                         <h3 class="text-[11.5px] font-bold text-indigo-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-[11px]"></i> ${item.title}</h3>
-                        <p class="text-[12.5px] font-medium text-slate-800 leading-snug mb-2 flex-1">"${item.text}"</p>
+                        <p class="text-[12.5px] font-medium text-slate-800 leading-snug mb-2">"${item.text}"</p>
                         <p class="text-[9.5px] text-slate-500 font-semibold text-right">- ${item.reference}</p>
                     </div>`;
                 }
                 else if (item.type === 'dua') {
                     feedHtml += `
-                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
+                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 shadow-sm flex flex-col">
                         <h3 class="text-[11.5px] font-bold text-emerald-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-hands-praying text-[10px]"></i> ${item.title}</h3>
-                        <p class="text-[15px] font-medium text-slate-800 text-right leading-relaxed mb-2 flex-1" dir="rtl">${item.arabic}</p>
+                        <p class="text-[15px] font-medium text-slate-800 text-right leading-relaxed mb-2" dir="rtl">${item.arabic}</p>
                         <p class="text-[10.5px] text-slate-600 leading-snug italic">" ${item.meaning} "</p>
                     </div>`;
                 } 
                 else if (item.type === 'video') {
                     feedHtml += `
-                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
                             <i class="fa-brands fa-youtube text-red-500 text-[12px]"></i>
                             <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
                         </div>
-                        <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
+                        <div class="relative w-full bg-slate-100" style="padding-top: 56.25%;">
                             <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${item.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>`;
                 }
                 else if (item.type === 'playlist') {
                     feedHtml += `
-                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
                         <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
                             <i class="fa-solid fa-list text-red-500 text-[12px]"></i>
                             <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
                         </div>
-                        <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
+                        <div class="relative w-full bg-slate-100" style="padding-top: 56.25%;">
                             <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/videoseries?list=${item.youtubeId}&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>`;
@@ -678,17 +707,17 @@
                     let gridHtml = '';
                     item.videos.forEach(vid => {
                         gridHtml += `
-                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
+                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
                             <div class="px-2 py-1.5 border-b border-slate-50 flex items-center gap-1.5">
                                 <i class="fa-brands fa-youtube text-red-500 text-[10px]"></i>
                                 <h3 class="text-[9.5px] font-bold text-slate-800 truncate">${vid.title}</h3>
                             </div>
-                            <div class="relative w-full bg-slate-100 flex-1" style="padding-top: 56.25%;">
+                            <div class="relative w-full bg-slate-100" style="padding-top: 56.25%;">
                                 <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${vid.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             </div>
                         </div>`;
                     });
-                    feedHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full h-full">${gridHtml}</div>`;
+                    feedHtml += `<div class="grid grid-cols-2 gap-2 w-full">${gridHtml}</div>`;
                 }
                 else if (item.type === 'image-grid') {
                     let gridHtml = '';
@@ -703,7 +732,7 @@
                 }
                 else if (item.type === 'ramadan') {
                     feedHtml += `
-                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-xl p-3 shadow-sm h-full flex flex-col justify-center">
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-xl p-3 shadow-sm flex flex-col justify-center">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="text-[11.5px] font-bold text-orange-800 flex items-center gap-1.5"><i class="fa-solid fa-moon text-[11px]"></i> আজকের রোজা (${item.date})</h3>
                         </div>
@@ -728,7 +757,7 @@
                 }
                 else if (item.type === 'quote') {
                     feedHtml += `
-                    <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 shadow-sm text-center h-full flex flex-col justify-center items-center">
+                    <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 shadow-sm text-center flex flex-col justify-center items-center">
                         <i class="fa-solid fa-quote-left text-[14px] text-slate-300 mb-1"></i>
                         <p class="text-[12px] font-medium text-slate-700 leading-snug mb-1">"${item.text}"</p>
                         <p class="text-[9.5px] text-slate-500 font-semibold">- ${item.author}</p>
@@ -745,23 +774,19 @@
         }
 
         async function loadDynamicFeed() {
-            const savedFeed = localStorage.getItem('dynamic_app_feed');
-            if (savedFeed) {
-                try { applyFeedToDOM(JSON.parse(savedFeed)); } catch (e) {}
+            const cached = localStorage.getItem('dynamic_app_feed');
+            if (cached) {
+                try { renderFeed(JSON.parse(cached)); } catch (e) {}
             }
-
             try {
                 const response = await fetch('content.json', { cache: 'no-store' });
                 if (!response.ok) return; 
                 const data = await response.json();
                 localStorage.setItem('dynamic_app_feed', JSON.stringify(data));
-                applyFeedToDOM(data);
-            } catch (error) {
-                console.log("Error loading content");
-            }
+                renderFeed(data);
+            } catch (error) {}
         }
 
-        // স্ক্রিপ্ট লোড হওয়ার সাথে সাথেই রান হবে (DOMContentLoaded এর জন্য অপেক্ষা করে সময় নষ্ট করবে না)
         initLocation(); 
         updateNotiUI(); 
         loadAppConfig(); 
