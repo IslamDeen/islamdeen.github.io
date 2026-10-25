@@ -14,12 +14,18 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// app-config.json থেকে সরাসরি অ্যাপের নাম ও লোগো নিয়ে আসা (কোনো নাম হার্ডকোড করা নেই)
+// control/app-config.json থেকে সরাসরি অ্যাপের নাম ও লোগো নিয়ে আসা (কোনো অদৃশ্য ক্যারেক্টার থাকলে তাও ক্লিন করবে)
 async function getAppConfig() {
-    try {
-        const res = await fetch('app-config.json', { cache: 'no-store' });
-        if (res.ok) return await res.json();
-    } catch (e) {}
+    const urls = ['control/app-config.json', 'app-config.json'];
+    for (const url of urls) {
+        try {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (res.ok) {
+                const text = await res.text();
+                return JSON.parse(text.replace(/[\u200B-\u200D\uFEFF]/g, ''));
+            }
+        } catch (e) {}
+    }
     return {};
 }
 
