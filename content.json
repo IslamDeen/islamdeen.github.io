@@ -1,100 +1,140 @@
-[
-  {
-    "type": "INSTRUCTION",
-    "message": "এখানে যেকোনো আইটেম বন্ধ করতে active: false দিন। নতুন ডামি আইটেম যোগ করতে নিচ থেকে false করা ব্লক কপি করে true করে দিন।",
-    "active": false
-  },
-  {
-    "type": "notice",
-    "active": true,
-    "title": "নোটিশ",
-    "description": "আসসালামু আলাইকুম। আমাদের অ্যাপে নতুন আপডেট এসেছে। নিয়মিত ব্যবহার করুন এবং সওয়াবের অংশীদার হোন।",
-    "icon": "fa-bullhorn"
-  },
-
-
-  {
-    "type": "image",
-    "active": true,
-    "title": "Playlist:এআই-ভিজ্যুয়ালাইজড সিরাহ সিরিজ - ইয়া রাসূলুল্লাহ(সাঃ)",
-    "imageUrl": "https://i.ytimg.com/vi/DAORc0Moauk/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCgFM826IyNgjGN0JpjSN8uAICb8A",
-    "link": "https://youtube.com/playlist?list=PLEdLmfVFySHk&si=DFI2hcOde7o99t-6"
-  },
-
 {
-    "type": "image",
-    "active": true,
-    "title": "Playlist:কিয়ামত দিবস সিরিজ",
-    "imageUrl": "https://i.ytimg.com/vi/TWTurnPdxZs/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLArQIjamfdbGvN8yFOIYpP3WfPr1Q",
-    "link": "https://youtube.com/playlist?list=PLGO_5dXp7Dog&si=Xh6iKMBs9mFWOCzP"
-  },
-
-  
-  {
-    "type": "image-grid",
-    "active": false,
-    "images": [
-      {
-        "title": "গল্প ১ - ছবি",
-        "imageUrl": "https://i.ytimg.com/vi/ZMLsUpxQPXc/hqdefault.jpg",
-        "link": "https://youtube.com/"
-      },
-      {
-        "title": "গল্প ২ - ছবি",
-        "imageUrl": "https://i.ytimg.com/vi/4FXHRg1BYjw/hqdefault.jpg",
-        "link": "https://youtube.com/"
-      }
-    ]
-  },
-  {
-    "type": "video",
-    "active": false,
-    "title": "বড় ভিডিও ডামি (কপি করার জন্য)",
-    "youtubeId": "J-o1dFveFwU"
-  },
-  {
-    "type": "image",
-    "active": false,
-    "title": "বড় ব্যানার ছবি ডামি (কপি করার জন্য)",
-    "imageUrl": "https://i.ytimg.com/vi_webp/DAORc0Moauk/hqdefault.webp",
-    "link": "https://youtube.com/playlist?list=PLEdLmfVFySHk&si=vePoghQeGxTZGXpx"
-  },
-  {
-    "type": "hadith",
-    "active": false,
-    "title": "আজকের হাদিস",
-    "text": "যে ব্যক্তি আল্লাহ ও শেষ দিনের প্রতি ঈমান রাখে, সে যেন ভালো কথা বলে অথবা চুপ থাকে।",
-    "reference": "সহীহ বুখারী: ৬০১৮"
-  },
-  {
-    "type": "dua",
-    "active": false,
-    "title": "সকাল-সন্ধ্যার দোয়া",
-    "arabic": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
-    "meaning": "আল্লাহর নামে, যাঁর নামের বরকতে আসমান ও যমীনের কোনো কিছুই ক্ষতি করতে পারে না, আর তিনি সর্বশ্রোতা, সর্বজ্ঞানী।"
-  },
-  {
-    "type": "hadith",
-    "active": false,
-    "title": "ডামি হাদিস ব্লক (কপি করার জন্য)",
-    "text": "এখানে নতুন কোনো হাদিস বসাতে পারবেন।",
-    "reference": "রেফারেন্স এখানে"
-  },
-  {
-    "type": "dua",
-    "active": false,
-    "title": "ডামি দোয়া ব্লক (কপি করার জন্য)",
-    "arabic": "দোয়ার আরবি",
-    "meaning": "এখানে নতুন দোয়ার অর্থ।"
-  },
-  {
-    "type": "footer-links",
-    "active": true,
-    "nameText": "Developed by Rafid Islam",
-    "nameUrl": "https://www.youtube.com/@MrRafid4",
-    "sourceText": "Open Source",
-    "sourceUrl": "https://github.com/MrRafid"
-  }
+"_নির্দেশনা": "এখান থেকে অ্যাপের অডিও প্লেয়ার, সব ক্যাটাগরি বাটন এবং হোমপেজের নোটিশ, ভিডিও বা পোস্ট নিয়ন্ত্রণ (active: true অথবা false) করতে পারবেন।",
+​"audioPlayer": {
+"active": true,
+"title": "আসমাউল হুসনা",
+"subtitle": "আল্লাহর ৯৯টি নাম",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/99namesofAllah.png",
+"audioSrc": "audio/99names.mp3",
+"link": "pages/asmaul-husna.html"
+},
+​"categories": [
+{
+"active": true,
+"name": "আল কুরআন",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/ALQuran.png",
+"link": "pages/quran.html"
+},
+{
+"active": true,
+"name": "কুরআন অনুবাদ",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/ALQuran.png",
+"link": "pages/quran-translation.html"
+},
+{
+"active": true,
+"name": "হাদিস",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Hadith.png",
+"link": "pages/hadith.html"
+},
+{
+"active": true,
+"name": "সময়সূচী",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/prayerTime.png",
+"link": "#",
+"onClick": "openPrayerModal(); return false;"
+},
+{
+"active": true,
+"name": "তাসবীহ",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/DigitalTasbeeh.png",
+"link": "pages/tasbeeh.html"
+},
+{
+"active": true,
+"name": "মক্কা মদিনা",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Livemecca.png",
+"link": "pages/makkah-madinah.html"
+},
+{
+"active": true,
+"name": "নামাজ শিক্ষা",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Learning.png",
+"link": "pages/namaz-shikha.html"
+},
+{
+"active": true,
+"name": "দোয়া",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Dua.png",
+"link": "pages/dua.html"
+},
+{
+"active": false,
+"name": "নবীজীদের জীবন",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dashboard/logo/prophetlife.png",
+"link": "pages/prophets.html"
+},
+{
+"active": true,
+"name": "আসমাউল হুসনা",
+"iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/99namesofAllah.png",
+"link": "pages/asmaul-husna.html"
+}
+],
+​"feed": [
+{
+"type": "notice",
+"active": true,
+"title": "নোটিশ",
+"description": "আসসালামু আলাইকুম। আমাদের অ্যাপে নতুন আপডেট এসেছে। নিয়মিত ব্যবহার করুন এবং সওয়াবের অংশীদার হোন।",
+"icon": "fa-bullhorn"
+},
+{
+"type": "image",
+"active": true,
+"title": "Playlist:এআই-ভিজ্যুয়ালাইজড সিরাহ সিরিজ - ইয়া রাসূলুল্লাহ(সাঃ)",
+"imageUrl": "https://i.ytimg.com/vi/DAORc0Moauk/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCgFM826IyNgjGN0JpjSN8uAICb8A",
+"link": "https://youtube.com/playlist?list=PLEdLmfVFySHk&si=DFI2hcOde7o99t-6"
+},
+{
+"type": "image",
+"active": true,
+"title": "Playlist:কিয়ামত দিবস সিরিজ",
+"imageUrl": "https://i.ytimg.com/vi/TWTurnPdxZs/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLArQIjamfdbGvN8yFOIYpP3WfPr1Q",
+"link": "https://youtube.com/playlist?list=PLGO_5dXp7Dog&si=Xh6iKMBs9mFWOCzP"
+},
+{
+"type": "image-grid",
+"active": false,
+"images": [
+{
+"title": "গল্প ১ - ছবি",
+"imageUrl": "https://i.ytimg.com/vi/ZMLsUpxQPXc/hqdefault.jpg",
+"link": "https://youtube.com/"
+},
+{
+"title": "গল্প ২ - ছবি",
+"imageUrl": "https://i.ytimg.com/vi/4FXHRg1BYjw/hqdefault.jpg",
+"link": "https://youtube.com/"
+}
 ]
-
-
+},
+{
+"type": "video",
+"active": false,
+"title": "বড় ভিডিও ডামি (কপি করার জন্য)",
+"youtubeId": "J-o1dFveFwU"
+},
+{
+"type": "image",
+"active": false,
+"title": "বড় ব্যানার ছবি ডামি (কপি করার জন্য)",
+"imageUrl": "https://i.ytimg.com/vi_webp/DAORc0Moauk/hqdefault.webp",
+"link": "https://youtube.com/playlist?list=PLEdLmfVFySHk&si=vePoghQeGxTZGXpx"
+},
+{
+"type": "hadith",
+"active": false,
+"title": "আজকের হাদিস",
+"text": "যে ব্যক্তি আল্লাহ ও শেষ দিনের প্রতি ঈমান রাখে, সে যেন ভালো কথা বলে অথবা চুপ থাকে।",
+"reference": "সহীহ বুখারী: ৬০১৮"
+},
+{
+"type": "dua",
+"active": false,
+"title": "সকাল-সন্ধ্যার দোয়া",
+"arabic": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+"meaning": "আল্লাহর নামে, যাঁর নামের বরকতে আসমান ও যমীনের কোনো কিছুই ক্ষতি করতে পারে না, আর তিনি সর্বশ্রোতা, সর্বজ্ঞানী।"
+}
+]
+}
