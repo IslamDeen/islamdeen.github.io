@@ -1,83 +1,15 @@
 {
-  "_READ_ME_1": "নতুন ক্যাটাগরি তৈরি করতে নিচের যেকোনো একটি ব্লক কপি করে পেস্ট করুন।",
-  "_READ_ME_2": "iconUrl এর ভেতরে যেকোনো ছবির লিংক (URL) দিলেই সেটা আইকন হিসেবে বসে যাবে।",
-  "_READ_ME_3": "কোনো ক্যাটাগরি বন্ধ করতে চাইলে active: false করে দিন।",
-  
-  "appName": "Islam",
-  
-  "audioPlayer": {
-    "active": true,
-    "title": "আসমাউল হুসনা",
-    "subtitle": "আল্লাহর ৯৯টি নাম",
-    "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/99namesofAllah.png",
-    "audioSrc": "audio/99names.mp3",
-    "link": "asmaul-husna.html"
-  },
-  
-  "categories": [
-    {
-      "active": true,
-      "name": "আল কুরআন",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/ALQuran.png",
-      "link": "quran.html"
-    },
-    {
-      "active": true,
-      "name": "কুরআন অনুবাদ",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/ALQuran.png",
-      "link": "quran-translation.html"
-    },
-    {
-      "active": true,
-      "name": "হাদিস",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Hadith.png",
-      "link": "hadith.html"
-    },
-    {
-      "active": true,
-      "name": "সময়সূচী",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/prayerTime.png",
-      "link": "#",
-      "onClick": "openPrayerModal(); return false;"
-    },
-    {
-      "active": true,
-      "name": "তাসবীহ",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/DigitalTasbeeh.png",
-      "link": "tasbeeh.html"
-    },
-    {
-      "active": true,
-      "name": "মক্কা মদিনা",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Livemecca.png",
-      "link": "makkah-madinah.html"
-    },
-    {
-      "active": true,
-      "name": "নামাজ শিক্ষা",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Learning.png",
-      "link": "namaz-shikha.html"
-    },
-    {
-      "active": true,
-      "name": "দোয়া",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/Dua.png",
-      "link": "dua.html"
-    },
-    {
-      "active": false,
-      "name": "নবীজীদের জীবন",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dashboard/logo/prophetlife.png",
-      "link": "prophets.html"
-    },
-    {
-      "active": true,
-      "name": "আসমাউল হুসনা",
-      "iconUrl": "https://islamic-content.sgp1.digitaloceanspaces.com/Content/Dua/icons/Services/99namesofAllah.png",
-      "link": "asmaul-husna.html"
-    }
-  ]
+"_নির্দেশনা": "অ্যাপটি অন্য কাউকে দিলে সে শুধু এই ফাইলটিতে নিজের অ্যাপের নাম, লোগো এবং নিচে নিজের নাম বসালেই পুরো ওয়েবসাইট ও ইন্সটল হওয়া অ্যাপ (PWA) তার নামে হয়ে যাবে।",
+​"appName": "Islam",
+"appDescription": "A complete Islamic application for Bangladesh.",
+"logoUrl": "logo.png",
+"themeColor": "#1b6b5c",
+"backgroundColor": "#f8fafc",
+​"footer": {
+"active": true,
+"nameText": "Developed by Rafid Islam",
+"nameUrl": "https://www.youtube.com/@MrRafid4",
+"sourceText": "Open Source",
+"sourceUrl": "https://github.com/MrRafid"
 }
-
-
-
+}
