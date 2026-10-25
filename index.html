@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -822,7 +823,7 @@
                 } catch (e) {}
             }
             try {
-                const res = await fetch('app-config.json', { cache: 'no-store' });
+                const res = await fetch('control/app-config.json', { cache: 'no-store' });
                 if (!res.ok) return;
                 const config = await res.json();
                 const freshStr = JSON.stringify(config);
@@ -840,7 +841,7 @@
                 try { renderContentData(JSON.parse(cachedStr)); } catch (e) {}
             }
             try {
-                const res = await fetch('content.json', { cache: 'no-store' });
+                const res = await fetch('control/content.json', { cache: 'no-store' });
                 if (!res.ok) return;
                 const data = await res.json();
                 const freshStr = JSON.stringify(data);
@@ -859,3 +860,4 @@
     </script>
 </body>
 </html>
+```
