@@ -3,7 +3,7 @@
   "_READ_ME_2": "iconUrl এর ভেতরে যেকোনো ছবির লিংক (URL) দিলেই সেটা আইকন হিসেবে বসে যাবে।",
   "_READ_ME_3": "কোনো ক্যাটাগরি বন্ধ করতে চাইলে active: false করে দিন।",
   
-  "appName": "Islam Deen",
+  "appName": "Islam",
   
   "audioPlayer": {
     "active": true,
