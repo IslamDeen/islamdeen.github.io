@@ -1,6 +1,6 @@
 {
 "_নির্দেশনা": "এখান থেকে অ্যাপের অডিও প্লেয়ার, সব ক্যাটাগরি বাটন এবং হোমপেজের নোটিশ, ভিডিও বা পোস্ট নিয়ন্ত্রণ (active: true অথবা false) করতে পারবেন।",
-​"audioPlayer": {
+"audioPlayer": {
 "active": true,
 "title": "আসমাউল হুসনা",
 "subtitle": "আল্লাহর ৯৯টি নাম",
@@ -8,7 +8,7 @@
 "audioSrc": "audio/99names.mp3",
 "link": "pages/asmaul-husna.html"
 },
-​"categories": [
+"categories": [
 {
 "active": true,
 "name": "আল কুরআন",
@@ -71,7 +71,7 @@
 "link": "pages/asmaul-husna.html"
 }
 ],
-​"feed": [
+"feed": [
 {
 "type": "notice",
 "active": true,
