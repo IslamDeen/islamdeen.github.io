@@ -7,9 +7,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title id="appTitle">Islam Deen</title>
+    <title id="appTitle"></title>
     
-    <!-- Real PWA Manifest Link -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
     
@@ -39,22 +39,43 @@
             background-color: #e2e8f0; 
             background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
             background-size: 24px 24px;
-            display: flex; justify-content: center; -webkit-tap-highlight-color: transparent; margin: 0; min-height: 100vh; overflow-x: hidden; 
+            display: flex; 
+            justify-content: center; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
         }
         
         #app-container { 
-            width: 100%; background-color: #f8fafc; 
-            min-height: 100vh; position: relative; display: flex; flex-direction: column;
+            width: 100%; 
+            background-color: #f8fafc; 
+            min-height: 100vh; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column;
             box-shadow: 0 10px 40px rgba(0,0,0,0.12);
         }
 
-        /* Responsive Optimization */
+        /* Responsive Optimization for Tablet & Desktop */
         @media (min-width: 640px) {
             body { align-items: center; padding: 20px; }
-            #app-container { max-width: 600px; min-height: 88vh; height: 88vh; border-radius: 24px; overflow-y: auto; border: 6px solid #cbd5e1; }
+            #app-container { 
+                max-width: 620px; 
+                min-height: 88vh; 
+                height: 88vh; 
+                border-radius: 24px; 
+                overflow-y: auto; 
+                border: 6px solid #cbd5e1; 
+            }
         }
         @media (min-width: 1024px) {
-            #app-container { max-width: 960px; height: 85vh; border-radius: 28px; border-width: 7px; }
+            #app-container { 
+                max-width: 960px; 
+                height: 86vh; 
+                border-radius: 28px; 
+                border-width: 7px; 
+            }
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
@@ -62,12 +83,29 @@
         #app-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
         
         .icon-box { 
-            width: 38px; height: 38px; background: #ffffff; border-radius: 10px; 
-            display: flex; justify-content: center; align-items: center; 
-            transition: all 0.15s ease; border: 1px solid #e2e8f0; color: #475569; font-size: 15px;
+            width: 40px; 
+            height: 40px; 
+            background: #ffffff; 
+            border-radius: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: all 0.15s ease; 
+            border: 1px solid #e2e8f0; 
+            color: #475569; 
+            font-size: 15px;
             overflow: hidden;
         }
-        @media (hover: hover) { .cat-item:hover .icon-box { background: #f1f5f9; transform: translateY(-1px); border-color: #cbd5e1;} }
+        @media (min-width: 768px) {
+            .icon-box { width: 44px; height: 44px; border-radius: 12px; }
+        }
+        @media (hover: hover) { 
+            .cat-item:hover .icon-box { 
+                background: #f1f5f9; 
+                transform: translateY(-2px); 
+                border-color: #cbd5e1;
+            } 
+        }
         .cat-item:active .icon-box { transform: scale(0.94); background: #e2e8f0; color: #0f172a; }
         
         #extraCategories { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.25s ease-in-out; }
@@ -78,14 +116,13 @@
 
     <div id="app-container">
 
-        <!-- HEADER -->
-        <header class="flex justify-between items-center px-4 py-2 sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-appGreen rounded-[6px] flex justify-center items-center text-white shadow-sm overflow-hidden">
-                    <img src="logo.png" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('fallbackIcon').style.display='block';">
-                    <i id="fallbackIcon" class="fa-solid fa-kaaba text-[11px]" style="display: none;"></i>
+        <!-- HEADER (কোনো হার্ডকোড করা নাম বা পুরনো লোগো নেই, সম্পূর্ণ ডায়নামিক) -->
+        <header class="flex justify-between items-center px-4 py-2.5 sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+            <div class="flex items-center gap-2 min-h-[24px]">
+                <div id="logoWrapper" class="w-6 h-6 rounded-[6px] flex justify-center items-center overflow-hidden hidden">
+                    <img id="appLogo" src="logo.png" alt="" class="w-full h-full object-cover" onload="document.getElementById('logoWrapper').classList.remove('hidden')" onerror="document.getElementById('logoWrapper').remove()">
                 </div>
-                <h1 id="appNameHeader" class="text-[15px] font-bold tracking-tight text-slate-800">Amar Deen</h1>
+                <h1 id="appNameHeader" class="text-[15px] sm:text-[16px] font-bold tracking-tight text-slate-800"></h1>
             </div>
             
             <div class="flex items-center gap-2">
@@ -101,30 +138,30 @@
             </div>
         </header>
 
-        <main class="px-3 mt-2.5 space-y-3 pb-3 flex-1">
+        <main class="px-3 sm:px-4 mt-2.5 sm:mt-3 space-y-3 pb-3 flex-1">
             <!-- PRAYER BANNER -->
-            <section class="relative z-30 rounded-xl shadow-sm bg-gradient-to-r from-appGreen to-appGreenLight px-3.5 py-2.5 flex justify-between items-center">
+            <section class="relative z-30 rounded-xl shadow-sm bg-gradient-to-r from-appGreen to-appGreenLight px-3.5 sm:px-5 py-2.5 sm:py-3.5 flex justify-between items-center">
                 <div class="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-                    <i class="fa-solid fa-mosque absolute -bottom-3 -right-2 text-[65px] text-white/10 -rotate-6"></i>
+                    <i class="fa-solid fa-mosque absolute -bottom-3 -right-2 text-[65px] sm:text-[80px] text-white/10 -rotate-6"></i>
                 </div>
                 
                 <div class="flex flex-col flex-1 relative z-10">
-                    <span class="text-[9px] text-green-100 font-medium tracking-wide">পরবর্তী নামাজ:</span>
+                    <span class="text-[9px] sm:text-[10px] text-green-100 font-medium tracking-wide">পরবর্তী নামাজ:</span>
                     <div class="flex items-baseline gap-1 flex-wrap">
-                        <span id="nextPrayerName" class="text-[17px] sm:text-[19px] font-bold text-white leading-none">--</span>
+                        <span id="nextPrayerName" class="text-[17px] sm:text-[20px] font-bold text-white leading-none">--</span>
                         <span id="nextPrayerTime" class="text-[11px] sm:text-[12px] font-mono text-green-200 ml-1">--:--</span>
                     </div>
-                    <div class="text-[10px] font-medium text-green-100 mt-0.5 flex items-center gap-1">
+                    <div class="text-[10px] sm:text-[11px] font-medium text-green-100 mt-0.5 flex items-center gap-1">
                         <i class="fa-regular fa-clock text-[9px]"></i>
-                        <span>বাকি: <span id="countdown" class="font-mono font-bold text-yellow-300 text-[11px] ml-0.5">--:--:--</span></span>
+                        <span>বাকি: <span id="countdown" class="font-mono font-bold text-yellow-300 text-[11px] sm:text-[12px] ml-0.5">--:--:--</span></span>
                     </div>
                 </div>
                 
                 <div class="flex flex-col items-end gap-1.5 shrink-0 relative z-10">
                     <div class="relative">
-                        <button id="locBtn" onclick="toggleLocDropdown(event)" class="flex items-center gap-1 text-[10px] font-semibold text-white bg-white/15 hover:bg-white/20 px-2.5 py-1 rounded transition border border-white/20 min-w-[70px] justify-between">
+                        <button id="locBtn" onclick="toggleLocDropdown(event)" class="flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-white bg-white/15 hover:bg-white/20 px-2.5 py-1 rounded transition border border-white/20 min-w-[75px] justify-between">
                             <i class="fa-solid fa-location-dot text-[8px] text-green-200 pointer-events-none"></i>
-                            <span id="selectedLocText" class="truncate max-w-[55px] pointer-events-none">Dhaka</span>
+                            <span id="selectedLocText" class="truncate max-w-[60px] pointer-events-none">Dhaka</span>
                             <i class="fa-solid fa-chevron-down text-[7px] text-green-100 pointer-events-none"></i>
                         </button>
                         <div id="locDropdown" class="hidden absolute right-0 top-[110%] w-44 bg-white shadow-xl border border-gray-200 rounded-lg p-1.5 z-[100]">
@@ -132,41 +169,35 @@
                             <ul id="locList" class="max-h-36 overflow-y-auto"></ul>
                         </div>
                     </div>
-                    <button onclick="toggleNoti()" class="flex items-center gap-1 text-[9px] font-medium text-white bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded active:scale-95 transition border border-white/10">
+                    <button onclick="toggleNoti()" class="flex items-center gap-1 text-[9px] sm:text-[10px] font-medium text-white bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded active:scale-95 transition border border-white/10">
                         <i id="notiIcon" class="fa-regular fa-bell text-[9px]"></i> <span id="notiText">অ্যালার্ম</span>
                     </button>
                 </div>
             </section>
 
-            <!-- CATEGORY GRID (DYNAMIC) -->
-            <section class="bg-white border border-slate-100 rounded-xl p-3 shadow-sm z-10 relative">
-                <div id="mainCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3 gap-x-2">
-                    <!-- Main Categories will load here -->
-                </div>
+            <!-- CATEGORY GRID (PURE DYNAMIC SHELL) -->
+            <section id="categorySection" class="bg-white border border-slate-100 rounded-xl p-3 sm:p-4 shadow-sm z-10 relative">
+                <div id="mainCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3.5 gap-x-2"></div>
 
                 <div id="extraCategories">
-                    <div id="extraCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3 gap-x-2 pt-3">
-                        <!-- Extra Categories will load here -->
-                    </div>
+                    <div id="extraCategoriesGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-y-3.5 gap-x-2 pt-3.5"></div>
                 </div>
 
-                <div class="mt-2.5 flex justify-center" id="toggleButtonContainer">
-                    <button onclick="toggleCategories()" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1.5 active:scale-95 transition bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 hover:bg-slate-100">
+                <div class="mt-2.5 justify-center hidden" id="toggleButtonContainer">
+                    <button onclick="toggleCategories()" class="text-[10px] text-slate-500 font-semibold flex items-center gap-1.5 active:scale-95 transition bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 hover:bg-slate-100">
                         <span id="toggleText">আরও দেখুন</span> <i id="toggleIcon" class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200"></i>
                     </button>
                 </div>
             </section>
 
-            <!-- MODERN AUDIO PLAYER (DYNAMIC) -->
+            <!-- MODERN AUDIO PLAYER (PURE DYNAMIC SHELL) -->
             <section id="audioPlayerSection" style="display: none;" class="bg-white border border-slate-100 rounded-[14px] shadow-sm z-10 relative overflow-hidden flex flex-col">
                 <div class="flex items-center w-full">
-                    <a id="audioLink" href="asmaul-husna.html" class="flex items-center gap-2.5 py-2.5 px-3 cursor-pointer hover:bg-slate-50 active:bg-slate-100 transition-colors w-1/2 md:w-auto md:flex-1">
-                        <div id="audioIconContainer" class="w-9 h-9 bg-slate-50 border border-slate-100 rounded-full flex justify-center items-center text-appGreen shrink-0 overflow-hidden">
-                            <!-- Image will load here -->
-                        </div>
+                    <a id="audioLink" href="#" class="flex items-center gap-2.5 py-2.5 px-3 cursor-pointer hover:bg-slate-50 active:bg-slate-100 transition-colors w-1/2 md:w-auto md:flex-1">
+                        <div id="audioIconContainer" class="w-9 h-9 bg-slate-50 border border-slate-100 rounded-full flex justify-center items-center text-appGreen shrink-0 overflow-hidden"></div>
                         <div class="flex flex-col truncate">
-                            <span id="audioTitle" class="text-[12px] font-bold text-slate-800 leading-tight truncate">আসমাউল হুসনা</span>
-                            <span id="audioSubtitle" class="text-[9.5px] font-medium text-slate-500 mt-0.5 truncate">আল্লাহর ৯৯টি নাম</span>
+                            <span id="audioTitle" class="text-[12px] font-bold text-slate-800 leading-tight truncate"></span>
+                            <span id="audioSubtitle" class="text-[9.5px] font-medium text-slate-500 mt-0.5 truncate"></span>
                         </div>
                     </a>
                     
@@ -188,24 +219,19 @@
                 <div class="w-full bg-slate-100 h-1">
                     <div id="playerProgressBar" class="bg-slate-800 h-full w-0 transition-all duration-300 rounded-r-full"></div>
                 </div>
-                <audio id="asmaulAudioPlayer" src="audio/99names.mp3"></audio> 
+                <audio id="asmaulAudioPlayer" preload="none"></audio> 
             </section>
 
-            <!-- DYNAMIC CONTENT FEED -->
-            <section id="dynamicFeed" class="grid grid-cols-1 md:grid-cols-2 gap-3 z-10 relative">
-                <!-- Content cards render here -->
-            </section>
+            <!-- DYNAMIC CONTENT FEED (PURE DYNAMIC SHELL) -->
+            <section id="dynamicFeed" class="grid grid-cols-1 md:grid-cols-2 gap-3 z-10 relative"></section>
 
-            <!-- ULTRA MINIMAL FOOTER -->
-            <footer id="minimalFooter" class="flex justify-center items-center gap-3 pt-3 pb-2 w-full text-[9px] font-medium text-slate-400 z-10 relative">
-                <!-- Rendered dynamically -->
-            </footer>
-
+            <!-- ULTRA MINIMAL FOOTER (PURE DYNAMIC SHELL) -->
+            <footer id="minimalFooter" class="flex justify-center items-center gap-3 pt-3 pb-2 w-full text-[9.5px] font-medium text-slate-400 z-10 relative"></footer>
         </main>
 
         <!-- PRAYER MODAL -->
         <div id="prayerModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4" onclick="if(event.target === this) closePrayerModal()">
-            <div id="prayerModalContent" class="bg-white rounded-xl p-3.5 w-full max-w-[250px] shadow-xl transform scale-95 transition-transform duration-200 relative">
+            <div id="prayerModalContent" class="bg-white rounded-xl p-3.5 w-full max-w-[260px] shadow-xl transform scale-95 transition-transform duration-200 relative">
                 <div class="text-center mb-2.5 pb-2.5 border-b border-slate-100">
                     <h2 class="text-[13px] font-bold text-appGreen flex justify-center items-center gap-1.5"><i class="fa-solid fa-clock text-[11px]"></i> আজকের সময়সূচী</h2>
                 </div>
@@ -215,14 +241,22 @@
                 <button onclick="closePrayerModal()" class="mt-3.5 w-full bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold py-2 rounded-md text-[11px] active:scale-95 transition">বন্ধ করুন</button>
             </div>
         </div>
+
+        <!-- NON-BLOCKING TOAST -->
+        <div id="appToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[200] pointer-events-none opacity-0 transition-opacity duration-200 bg-slate-800 text-white text-[11px] px-3.5 py-2 rounded-lg shadow-lg"></div>
     </div>
 
     <script>
+        function showNotice(msg) {
+            const t = document.getElementById('appToast');
+            t.innerText = msg;
+            t.classList.remove('opacity-0');
+            setTimeout(() => t.classList.add('opacity-0'), 3000);
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registered'))
-                .catch(err => console.error("SW Registration failed:", err));
+                navigator.serviceWorker.register('sw.js').catch(() => {});
             });
         }
 
@@ -239,14 +273,14 @@
 
         installBtn.addEventListener('click', async () => {
             if (isIos) {
-                alert("আইফোনে অ্যাপ ইন্সটল করতে ব্রাউজারের নিচে 'Share' আইকনে ক্লিক করে 'Add to Home Screen' নির্বাচন করুন।");
+                showNotice("আইফোনে নিচে 'Share' আইকনে ক্লিক করে 'Add to Home Screen' নির্বাচন করুন।");
             } else if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') installBtn.classList.add('hidden');
                 deferredPrompt = null;
             } else {
-                alert("ব্রাউজারের মেনু (⋮) থেকে 'Install App' বা 'Add to Home screen' সিলেক্ট করুন।");
+                showNotice("ব্রাউজারের মেনু (⋮) থেকে 'Install App' সিলেক্ট করুন।");
             }
         });
 
@@ -282,7 +316,7 @@
             e.stopPropagation();
             const dd = document.getElementById('locDropdown');
             dd.classList.toggle('hidden');
-            if(!dd.classList.contains('hidden')) document.getElementById('locSearch').focus();
+            if (!dd.classList.contains('hidden')) document.getElementById('locSearch').focus();
         }
         
         function filterLocations() {
@@ -302,7 +336,7 @@
         function updateNotiUI() {
             const icon = document.getElementById('notiIcon');
             const txt = document.getElementById('notiText');
-            if(notiActive) {
+            if (notiActive) {
                 icon.className = 'fa-solid fa-bell text-[9px] text-yellow-300 drop-shadow-sm';
                 txt.classList.add('text-yellow-100');
             } else {
@@ -313,10 +347,10 @@
 
         async function toggleNoti() {
             if (!notiActive) {
-                if (!("Notification" in window)) return alert("আপনার ব্রাউজার নোটিফিকেশন সাপোর্ট করে কাশী।");
+                if (!("Notification" in window)) return showNotice("আপনার ব্রাউজার নোটিফিকেশন সাপোর্ট করে না।");
                 const perm = await Notification.requestPermission();
                 if (perm === "granted") notiActive = true;
-                else return alert("অ্যালার্ম পেতে ব্রাউজারের সেটিংস থেকে পারমিশন দিন।");
+                else return showNotice("অ্যালার্ম পেতে ব্রাউজারের সেটিংস থেকে পারমিশন দিন।");
             } else notiActive = false;
             
             localStorage.setItem('amarDeenBell', notiActive);
@@ -332,10 +366,14 @@
             const cacheKey = `p_${city}_${dateStr}`;
             const cachedData = localStorage.getItem(cacheKey);
             
-            if(cachedData) { prayerTimesData = JSON.parse(cachedData); startCalculation(); return; }
+            if (cachedData) { 
+                prayerTimesData = JSON.parse(cachedData); 
+                startCalculation(); 
+                return; 
+            }
 
             try {
-                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Bangladesh&method=1`);
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=Bangladesh&method=1`);
                 const data = await res.json();
                 if (data.code === 200) {
                     prayerTimesData = data.data.timings;
@@ -348,55 +386,71 @@
         }
 
         function format12Hour(timeStr) {
-            if(!timeStr) return "--:--";
-            let [h, m] = timeStr.split(':'); h = parseInt(h, 10);
-            let ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; 
-            return `${h < 10 ? '0'+h : h}:${m} ${ampm}`;
+            if (!timeStr) return "--:--";
+            let clean = timeStr.split(' ')[0];
+            let [h, m] = clean.split(':'); 
+            h = parseInt(h, 10);
+            let ampm = h >= 12 ? 'PM' : 'AM'; 
+            h = h % 12 || 12; 
+            return `${h < 10 ? '0' + h : h}:${m} ${ampm}`;
+        }
+
+        function updatePrayerCountdown() {
+            if (!prayerTimesData || !prayerTimesData.Fajr) return;
+            const now = new Date();
+            let nextPrayer = 'Fajr', timeStrForUI = prayerTimesData['Fajr'], nextTime = null;
+            const times = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+            for (let pt of times) {
+                if (!prayerTimesData[pt]) continue;
+                let clean = prayerTimesData[pt].split(' ')[0];
+                let [h, m] = clean.split(':');
+                let pTime = new Date(); 
+                pTime.setHours(parseInt(h, 10), parseInt(m, 10), 0, 0);
+                if (pTime > now) { 
+                    nextPrayer = pt; 
+                    nextTime = pTime; 
+                    timeStrForUI = clean; 
+                    break; 
+                }
+            }
+            
+            if (!nextTime) {
+                let clean = prayerTimesData['Fajr'].split(' ')[0];
+                let [h, m] = clean.split(':');
+                nextTime = new Date(); 
+                nextTime.setDate(now.getDate() + 1); 
+                nextTime.setHours(parseInt(h, 10), parseInt(m, 10), 0, 0);
+                timeStrForUI = clean;
+            }
+
+            document.getElementById('nextPrayerName').innerText = bnPrayerNames[nextPrayer] || '--';
+            document.getElementById('nextPrayerTime').innerText = `(${format12Hour(timeStrForUI)})`;
+            
+            let diff = Math.max(0, nextTime - now);
+            let hL = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let mL = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            let sL = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').innerText = `${hL.toString().padStart(2, '0')}:${mL.toString().padStart(2, '0')}:${sL.toString().padStart(2, '0')}`;
+
+            if (notiActive && diff > 0 && diff <= 1000 && !notifiedPrayers.has(nextPrayer) && nextPrayer !== 'Sunrise') {
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("নামাজের সময়", { 
+                        body: `${currentCity}-এ ${bnPrayerNames[nextPrayer]} এর ওয়াক্ত শুরু হয়েছে।`,
+                        icon: "logo.png"
+                    });
+                    notifiedPrayers.add(nextPrayer);
+                }
+            }
+            if (now.getHours() === 0 && now.getMinutes() === 0) notifiedPrayers.clear();
         }
 
         function startCalculation() {
             updateModalData();
-            if(countdownInterval) clearInterval(countdownInterval);
-            
-            countdownInterval = setInterval(() => {
-                if(!prayerTimesData || !prayerTimesData.Fajr) return;
-                const now = new Date();
-                let nextPrayer = 'Fajr', timeStrForUI = prayerTimesData['Fajr'], nextTime = null;
-                const times = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-                for (let pt of times) {
-                    if(!prayerTimesData[pt]) continue;
-                    let [h, m] = prayerTimesData[pt].split(':');
-                    let pTime = new Date(); pTime.setHours(parseInt(h, 10), parseInt(m, 10), 0, 0);
-                    if (pTime > now) { nextPrayer = pt; nextTime = pTime; timeStrForUI = prayerTimesData[pt]; break; }
-                }
-                
-                if (!nextTime) {
-                    let [h, m] = prayerTimesData['Fajr'].split(':');
-                    nextTime = new Date(); nextTime.setDate(now.getDate() + 1); nextTime.setHours(parseInt(h, 10), parseInt(m, 10), 0, 0);
-                }
-
-                document.getElementById('nextPrayerName').innerText = bnPrayerNames[nextPrayer] || '--';
-                document.getElementById('nextPrayerTime').innerText = `(${format12Hour(timeStrForUI)})`;
-                
-                let diff = nextTime - now;
-                let hL = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-                let mL = Math.floor((diff % (1000*60*60)) / (1000*60));
-                let sL = Math.floor((diff % (1000*60)) / 1000);
-                
-                document.getElementById('countdown').innerText = `${hL.toString().padStart(2, '0')}:${mL.toString().padStart(2, '0')}:${sL.toString().padStart(2, '0')}`;
-
-                if (notiActive && diff > 0 && diff <= 1000 && !notifiedPrayers.has(nextPrayer) && nextPrayer !== 'Sunrise') {
-                    if (Notification.permission === "granted") {
-                        new Notification("নামাজের সময়", { 
-                            body: `${currentCity}-এ ${bnPrayerNames[nextPrayer]} এর ওয়াক্ত শুরু হয়েছে।`,
-                            icon: "logo.png"
-                        });
-                        notifiedPrayers.add(nextPrayer);
-                    }
-                }
-                if(now.getHours() === 0 && now.getMinutes() === 0) notifiedPrayers.clear();
-            }, 1000);
+            updatePrayerCountdown();
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(updatePrayerCountdown, 1000);
         }
 
         const modal = document.getElementById('prayerModal');
@@ -409,7 +463,7 @@
             const mainTimes = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             let html = '';
             mainTimes.forEach(t => {
-                if(prayerTimesData[t]) {
+                if (prayerTimesData[t]) {
                     html += `<div class="flex justify-between items-center ${t === 'Sunrise' ? 'bg-orange-50/50 text-orange-600' : 'bg-slate-50 text-slate-700'} py-2 px-3 rounded-lg border border-slate-100">
                         <span class="text-[12px] font-bold">${bnPrayerNames[t]}</span>
                         <span class="text-[12px] font-mono font-bold">${format12Hour(prayerTimesData[t])}</span>
@@ -425,8 +479,9 @@
 
         function togglePlayerAudio() {
             if (audioEl.paused) {
-                audioEl.play().catch(e => console.log("Audio play blocked", e));
-                playIcon.className = 'fa-solid fa-pause text-[12px]';
+                audioEl.play().then(() => {
+                    playIcon.className = 'fa-solid fa-pause text-[12px]';
+                }).catch(() => {});
             } else {
                 audioEl.pause();
                 playIcon.className = 'fa-solid fa-play text-[12px] ml-0.5';
@@ -434,10 +489,11 @@
         }
 
         function skipPlayerAudio(seconds) {
-            audioEl.currentTime += seconds;
+            if (audioEl.duration) audioEl.currentTime += seconds;
         }
 
         audioEl.addEventListener('timeupdate', () => {
+            if (!audioEl.duration) return;
             const progress = (audioEl.currentTime / audioEl.duration) * 100;
             progressBar.style.width = (progress || 0) + '%';
         });
@@ -448,54 +504,57 @@
             audioEl.currentTime = 0;
         });
 
-        // --- DYNAMIC APP CONFIGURATION (NOW WITH IMAGE URLs) ---
-        async function loadAppConfig() {
-            try {
-                const response = await fetch('app-config.json');
-                if (!response.ok) return;
-                const config = await response.json();
+        // --- PURE DYNAMIC APP CONFIGURATION (100% Controlled by app-config.json) ---
+        function applyConfigToDOM(config) {
+            if (!config) return;
 
-                // 1. Setup App Name
-                if (config.appName) {
-                    document.getElementById('appNameHeader').innerText = config.appName;
-                    document.getElementById('appTitle').innerText = config.appName + " - আমার দ্বীন";
-                }
+            // 1. Setup App Name (কোনো অতিরিক্ত লেখা যোগ করা হয়নি)
+            if (config.appName) {
+                document.getElementById('appNameHeader').innerText = config.appName;
+                document.getElementById('appTitle').innerText = config.appName;
+            }
 
-                // 2. Setup Audio Player
-                if (config.audioPlayer && config.audioPlayer.active) {
-                    document.getElementById('audioPlayerSection').style.display = 'flex';
-                    document.getElementById('audioTitle').innerText = config.audioPlayer.title;
-                    document.getElementById('audioSubtitle').innerText = config.audioPlayer.subtitle;
-                    
-                    // Audio Player Icon Setup (URL based)
-                    const audioIconDiv = document.getElementById('audioIconContainer');
-                    if(config.audioPlayer.iconUrl) {
-                        audioIconDiv.innerHTML = `<img src="${config.audioPlayer.iconUrl}" class="w-5 h-5 object-contain" onerror="this.style.display='none'">`;
-                    } else {
-                        audioIconDiv.innerHTML = `<i class="fa-solid fa-music text-[13px]"></i>`;
-                    }
+            // Optional Logo URL from app-config.json if provided
+            if (config.logoUrl) {
+                document.getElementById('appLogo').src = config.logoUrl;
+            }
 
-                    document.getElementById('asmaulAudioPlayer').src = config.audioPlayer.audioSrc;
-                    document.getElementById('audioLink').href = config.audioPlayer.link;
+            // 2. Setup Audio Player
+            if (config.audioPlayer && config.audioPlayer.active) {
+                document.getElementById('audioPlayerSection').style.display = 'flex';
+                document.getElementById('audioTitle').innerText = config.audioPlayer.title || '';
+                document.getElementById('audioSubtitle').innerText = config.audioPlayer.subtitle || '';
+                
+                const audioIconDiv = document.getElementById('audioIconContainer');
+                if (config.audioPlayer.iconUrl) {
+                    audioIconDiv.innerHTML = `<img src="${config.audioPlayer.iconUrl}" class="w-5 h-5 object-contain" onerror="this.style.display='none'">`;
                 } else {
-                    document.getElementById('audioPlayerSection').style.display = 'none';
+                    audioIconDiv.innerHTML = `<i class="fa-solid fa-music text-[13px]"></i>`;
                 }
 
-                // 3. Setup Categories (URL based Icons)
+                if (config.audioPlayer.audioSrc && audioEl.getAttribute('src') !== config.audioPlayer.audioSrc) {
+                    audioEl.src = config.audioPlayer.audioSrc;
+                }
+                document.getElementById('audioLink').href = config.audioPlayer.link || '#';
+            } else {
+                document.getElementById('audioPlayerSection').style.display = 'none';
+            }
+
+            // 3. Setup Categories
+            if (Array.isArray(config.categories)) {
                 const activeCategories = config.categories.filter(c => c.active);
                 let mainHtml = '';
                 let extraHtml = '';
 
                 activeCategories.forEach((cat, index) => {
-                    // Category Icon Setup (URL based)
                     let iconHtml = cat.iconUrl 
-                        ? `<img src="${cat.iconUrl}" alt="${cat.name}" class="w-[22px] h-[22px] object-contain" onerror="this.style.display='none'">` 
-                        : `<i class="fa-solid fa-link text-slate-400"></i>`; // Fallback icon if URL is empty
+                        ? `<img src="${cat.iconUrl}" alt="${cat.name}" class="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] object-contain" onerror="this.style.display='none'">` 
+                        : `<i class="fa-solid fa-link text-slate-400"></i>`;
 
                     let catHtml = `
                     <a href="${cat.link}" ${cat.onClick ? `onclick="${cat.onClick}"` : ''} class="cat-item flex flex-col items-center gap-1">
                         <div class="icon-box">${iconHtml}</div>
-                        <span class="text-[10px] font-medium text-slate-600 text-center leading-tight">${cat.name}</span>
+                        <span class="text-[10px] sm:text-[11px] font-medium text-slate-600 text-center leading-tight">${cat.name}</span>
                     </a>`;
                     
                     if (index < 8) {
@@ -508,195 +567,206 @@
                 document.getElementById('mainCategoriesGrid').innerHTML = mainHtml;
                 document.getElementById('extraCategoriesGrid').innerHTML = extraHtml;
                 
-                if(extraHtml === '') {
-                    document.getElementById('toggleButtonContainer').style.display = 'none';
+                const toggleBtn = document.getElementById('toggleButtonContainer');
+                if (extraHtml === '') {
+                    toggleBtn.classList.add('hidden');
+                    toggleBtn.classList.remove('flex');
                 } else {
-                    document.getElementById('toggleButtonContainer').style.display = 'flex';
+                    toggleBtn.classList.remove('hidden');
+                    toggleBtn.classList.add('flex');
                 }
+            }
+        }
 
+        async function loadAppConfig() {
+            // গতবার লোড হওয়া app-config.json মেমোরিতে থাকলে সাথে সাথে দেখাবে, তাই ১ সেকেন্ডও ফাঁকা থাকবে না
+            const savedConfig = localStorage.getItem('dynamic_app_config');
+            if (savedConfig) {
+                try { applyConfigToDOM(JSON.parse(savedConfig)); } catch (e) {}
+            }
+
+            try {
+                const response = await fetch('app-config.json', { cache: 'no-store' });
+                if (!response.ok) return;
+                const config = await response.json();
+                localStorage.setItem('dynamic_app_config', JSON.stringify(config));
+                applyConfigToDOM(config);
             } catch (error) {
                 console.log("Error loading app config", error);
             }
         }
 
-
-        // PURE DYNAMIC FEED SYSTEM
-        async function loadDynamicFeed() {
+        // --- PURE DYNAMIC FEED SYSTEM (100% Controlled by content.json) ---
+        function applyFeedToDOM(data) {
+            if (!Array.isArray(data)) return;
             const feedContainer = document.getElementById('dynamicFeed');
             const footerContainer = document.getElementById('minimalFooter');
+            
+            let feedHtml = '';
+            let footerHtml = '';
+
+            data.forEach(item => {
+                if (item.type === 'INSTRUCTION' || !item.active) return;
+                
+                if (item.type === 'footer-links') {
+                    footerHtml = `
+                        <a href="${item.nameUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.nameText}</a>
+                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <a href="${item.sourceUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.sourceText}</a>
+                    `;
+                    return; 
+                }
+
+                let colSpanClass = (item.type === 'notice' || item.type === 'video' || item.type === 'playlist' || item.type === 'video-grid' || item.type === 'image-grid' || item.type === 'ramadan') ? 'md:col-span-2' : '';
+                feedHtml += `<div class="${colSpanClass} h-full">`;
+
+                if (item.type === 'notice') {
+                    feedHtml += `
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 relative overflow-hidden h-full flex flex-col justify-center shadow-sm">
+                        <div class="flex items-start gap-2.5 relative z-10">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex justify-center items-center shrink-0 mt-0.5">
+                                <i class="fa-solid ${item.icon || 'fa-bullhorn'} text-[13px]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-[12px] font-bold text-blue-900 mb-0.5">${item.title}</h3>
+                                <p class="text-[10.5px] text-blue-700 leading-snug">${item.description}</p>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                else if (item.type === 'hadith') {
+                    feedHtml += `
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
+                        <h3 class="text-[11.5px] font-bold text-indigo-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-[11px]"></i> ${item.title}</h3>
+                        <p class="text-[12.5px] font-medium text-slate-800 leading-snug mb-2 flex-1">"${item.text}"</p>
+                        <p class="text-[9.5px] text-slate-500 font-semibold text-right">- ${item.reference}</p>
+                    </div>`;
+                }
+                else if (item.type === 'dua') {
+                    feedHtml += `
+                    <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
+                        <h3 class="text-[11.5px] font-bold text-emerald-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-hands-praying text-[10px]"></i> ${item.title}</h3>
+                        <p class="text-[15px] font-medium text-slate-800 text-right leading-relaxed mb-2 flex-1" dir="rtl">${item.arabic}</p>
+                        <p class="text-[10.5px] text-slate-600 leading-snug italic">" ${item.meaning} "</p>
+                    </div>`;
+                } 
+                else if (item.type === 'video') {
+                    feedHtml += `
+                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                        <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-500 text-[12px]"></i>
+                            <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
+                        </div>
+                        <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
+                            <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${item.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>`;
+                }
+                else if (item.type === 'playlist') {
+                    feedHtml += `
+                    <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                        <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
+                            <i class="fa-solid fa-list text-red-500 text-[12px]"></i>
+                            <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
+                        </div>
+                        <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
+                            <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/videoseries?list=${item.youtubeId}&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>`;
+                }
+                else if (item.type === 'video-grid') {
+                    let gridHtml = '';
+                    item.videos.forEach(vid => {
+                        gridHtml += `
+                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
+                            <div class="px-2 py-1.5 border-b border-slate-50 flex items-center gap-1.5">
+                                <i class="fa-brands fa-youtube text-red-500 text-[10px]"></i>
+                                <h3 class="text-[9.5px] font-bold text-slate-800 truncate">${vid.title}</h3>
+                            </div>
+                            <div class="relative w-full bg-slate-100 flex-1" style="padding-top: 56.25%;">
+                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${vid.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>`;
+                    });
+                    feedHtml += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full h-full">${gridHtml}</div>`;
+                }
+                else if (item.type === 'image-grid') {
+                    let gridHtml = '';
+                    item.images.forEach(img => {
+                        gridHtml += `
+                        <a href="${img.link || '#'}" target="_blank" class="block bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden relative aspect-video">
+                            <img src="${img.imageUrl}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                            ${img.title ? `<div class="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[9.5px] font-semibold px-2 py-1.5 truncate backdrop-blur-sm">${img.title}</div>` : ''}
+                        </a>`;
+                    });
+                    feedHtml += `<div class="grid grid-cols-2 gap-2 w-full">${gridHtml}</div>`;
+                }
+                else if (item.type === 'ramadan') {
+                    feedHtml += `
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-xl p-3 shadow-sm h-full flex flex-col justify-center">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-[11.5px] font-bold text-orange-800 flex items-center gap-1.5"><i class="fa-solid fa-moon text-[11px]"></i> আজকের রোজা (${item.date})</h3>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="flex-1 bg-white/60 rounded-lg p-2 text-center border border-orange-50">
+                                <span class="block text-[9px] text-slate-500 font-medium mb-0.5">সাহরী শেষ</span>
+                                <span class="block text-[13px] font-bold text-slate-800 font-mono">${item.sehri}</span>
+                            </div>
+                            <div class="flex-1 bg-white/60 rounded-lg p-2 text-center border border-orange-50">
+                                <span class="block text-[9px] text-slate-500 font-medium mb-0.5">ইফতার শুরু</span>
+                                <span class="block text-[13px] font-bold text-slate-800 font-mono">${item.iftar}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                else if (item.type === 'image') {
+                    feedHtml += `
+                    <a href="${item.link || '#'}" target="_blank" class="block bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden relative aspect-video">
+                        <img src="${item.imageUrl}" alt="${item.title || 'Image'}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        ${item.title ? `<div class="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[11.5px] font-semibold px-3 py-2 truncate backdrop-blur-sm">${item.title}</div>` : ''}
+                    </a>`;
+                }
+                else if (item.type === 'quote') {
+                    feedHtml += `
+                    <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 shadow-sm text-center h-full flex flex-col justify-center items-center">
+                        <i class="fa-solid fa-quote-left text-[14px] text-slate-300 mb-1"></i>
+                        <p class="text-[12px] font-medium text-slate-700 leading-snug mb-1">"${item.text}"</p>
+                        <p class="text-[9.5px] text-slate-500 font-semibold">- ${item.author}</p>
+                    </div>`;
+                }
+                
+                feedHtml += `</div>`;
+            });
+            
+            feedContainer.innerHTML = feedHtml;
+            if (footerHtml !== '') {
+                footerContainer.innerHTML = footerHtml;
+            }
+        }
+
+        async function loadDynamicFeed() {
+            const savedFeed = localStorage.getItem('dynamic_app_feed');
+            if (savedFeed) {
+                try { applyFeedToDOM(JSON.parse(savedFeed)); } catch (e) {}
+            }
 
             try {
-                const response = await fetch('content.json');
+                const response = await fetch('content.json', { cache: 'no-store' });
                 if (!response.ok) return; 
-                
                 const data = await response.json();
-                
-                let feedHtml = '';
-                let footerHtml = '';
-
-                data.forEach(item => {
-                    // Ignore instruction blocks or inactive items
-                    if (item.type === 'INSTRUCTION' || !item.active) return;
-                    
-                    if (item.type === 'footer-links') {
-                        footerHtml = `
-                            <a href="${item.nameUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.nameText}</a>
-                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                            <a href="${item.sourceUrl}" target="_blank" class="hover:text-slate-600 transition underline underline-offset-2">${item.sourceText}</a>
-                        `;
-                        return; 
-                    }
-
-                    let colSpanClass = (item.type === 'notice' || item.type === 'video' || item.type === 'playlist' || item.type === 'video-grid' || item.type === 'image-grid' || item.type === 'ramadan') ? 'md:col-span-2' : '';
-                    feedHtml += `<div class="${colSpanClass} h-full">`;
-
-                    if (item.type === 'notice') {
-                        feedHtml += `
-                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 relative overflow-hidden h-full flex flex-col justify-center shadow-sm">
-                            <div class="flex items-start gap-2.5 relative z-10">
-                                <div class="w-8.5 h-8.5 rounded-full bg-blue-100 text-blue-600 flex justify-center items-center shrink-0 mt-0.5">
-                                    <i class="fa-solid ${item.icon || 'fa-bullhorn'} text-[13px]"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-[12px] font-bold text-blue-900 mb-0.5">${item.title}</h3>
-                                    <p class="text-[10.5px] text-blue-700 leading-snug">${item.description}</p>
-                                </div>
-                            </div>
-                        </div>`;
-                    }
-                    else if (item.type === 'hadith') {
-                        feedHtml += `
-                        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
-                            <h3 class="text-[11.5px] font-bold text-indigo-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-[11px]"></i> ${item.title}</h3>
-                            <p class="text-[12.5px] font-medium text-slate-800 leading-snug mb-2 flex-1">"${item.text}"</p>
-                            <p class="text-[9.5px] text-slate-500 font-semibold text-right">- ${item.reference}</p>
-                        </div>`;
-                    }
-                    else if (item.type === 'dua') {
-                        feedHtml += `
-                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 shadow-sm h-full flex flex-col">
-                            <h3 class="text-[11.5px] font-bold text-emerald-800 mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-hands-praying text-[10px]"></i> ${item.title}</h3>
-                            <p class="text-[15px] font-medium text-slate-800 text-right leading-relaxed mb-2 flex-1" dir="rtl">${item.arabic}</p>
-                            <p class="text-[10.5px] text-slate-600 leading-snug italic">" ${item.meaning} "</p>
-                        </div>`;
-                    } 
-                    else if (item.type === 'video') {
-                        feedHtml += `
-                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
-                            <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
-                                <i class="fa-brands fa-youtube text-red-500 text-[12px]"></i>
-                                <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
-                            </div>
-                            <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
-                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${item.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>`;
-                    }
-                    else if (item.type === 'playlist') {
-                        feedHtml += `
-                        <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
-                            <div class="px-3 py-2 border-b border-slate-50 flex items-center gap-2">
-                                <i class="fa-solid fa-list text-red-500 text-[12px]"></i>
-                                <h3 class="text-[11.5px] font-bold text-slate-800">${item.title}</h3>
-                            </div>
-                            <div class="relative w-full bg-slate-100 flex-1" style="min-height: 180px; padding-top: 56.25%;">
-                                <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/videoseries?list=${item.youtubeId}&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>`;
-                    }
-                    else if (item.type === 'video-grid') {
-                        let gridHtml = '';
-                        item.videos.forEach(vid => {
-                            gridHtml += `
-                            <div class="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
-                                <div class="px-2 py-1.5 border-b border-slate-50 flex items-center gap-1.5">
-                                    <i class="fa-brands fa-youtube text-red-500 text-[10px]"></i>
-                                    <h3 class="text-[9.5px] font-bold text-slate-800 truncate">${vid.title}</h3>
-                                </div>
-                                <div class="relative w-full bg-slate-100 flex-1" style="padding-top: 56.25%;">
-                                    <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${vid.youtubeId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                            </div>`;
-                        });
-                        
-                        feedHtml += `
-                        <div class="grid grid-cols-2 gap-2 w-full h-full">
-                            ${gridHtml}
-                        </div>`;
-                    }
-                    // IMAGE-GRID (ছোট ছবির জন্য)
-                    else if (item.type === 'image-grid') {
-                        let gridHtml = '';
-                        item.images.forEach(img => {
-                            // ফিক্স: aspect-video ব্যবহার করা হয়েছে যেন সব ছবি সুন্দর সাইজে আসে
-                            gridHtml += `
-                            <a href="${img.link || '#'}" target="_blank" class="block bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden relative aspect-video">
-                                <img src="${img.imageUrl}" class="w-full h-full object-cover" onerror="this.style.display='none'">
-                                ${img.title ? `<div class="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[9.5px] font-semibold px-2 py-1.5 truncate backdrop-blur-sm">${img.title}</div>` : ''}
-                            </a>`;
-                        });
-                        
-                        feedHtml += `
-                        <div class="grid grid-cols-2 gap-2 w-full">
-                            ${gridHtml}
-                        </div>`;
-                    }
-                    else if (item.type === 'ramadan') {
-                        feedHtml += `
-                        <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-xl p-3 shadow-sm h-full flex flex-col justify-center">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-[11.5px] font-bold text-orange-800 flex items-center gap-1.5"><i class="fa-solid fa-moon text-[11px]"></i> আজকের রোজা (${item.date})</h3>
-                            </div>
-                            <div class="flex gap-2">
-                                <div class="flex-1 bg-white/60 rounded-lg p-2 text-center border border-orange-50">
-                                    <span class="block text-[9px] text-slate-500 font-medium mb-0.5">সাহরী শেষ</span>
-                                    <span class="block text-[13px] font-bold text-slate-800 font-mono">${item.sehri}</span>
-                                </div>
-                                <div class="flex-1 bg-white/60 rounded-lg p-2 text-center border border-orange-50">
-                                    <span class="block text-[9px] text-slate-500 font-medium mb-0.5">ইফতার শুরু</span>
-                                    <span class="block text-[13px] font-bold text-slate-800 font-mono">${item.iftar}</span>
-                                </div>
-                            </div>
-                        </div>`;
-                    }
-                    // IMAGE (বড় ছবির জন্য)
-                    else if (item.type === 'image') {
-                        // ফিক্স: aspect-video এবং টাইটেল দেখানোর কোড যুক্ত করা হয়েছে
-                        feedHtml += `
-                        <a href="${item.link || '#'}" target="_blank" class="block bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden relative aspect-video">
-                            <img src="${item.imageUrl}" alt="${item.title || 'Image'}" class="w-full h-full object-cover" onerror="this.style.display='none'">
-                            ${item.title ? `<div class="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[11.5px] font-semibold px-3 py-2 truncate backdrop-blur-sm">${item.title}</div>` : ''}
-                        </a>`;
-                    }
-                    else if (item.type === 'quote') {
-                        feedHtml += `
-                        <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 shadow-sm text-center h-full flex flex-col justify-center items-center">
-                            <i class="fa-solid fa-quote-left text-[14px] text-slate-300 mb-1"></i>
-                            <p class="text-[12px] font-medium text-slate-700 leading-snug mb-1">"${item.text}"</p>
-                            <p class="text-[9.5px] text-slate-500 font-semibold">- ${item.author}</p>
-                        </div>`;
-                    }
-                    
-                    feedHtml += `</div>`;
-                });
-                
-                feedContainer.innerHTML = feedHtml;
-                if (footerHtml !== '') {
-                    footerContainer.innerHTML = footerHtml;
-                }
+                localStorage.setItem('dynamic_app_feed', JSON.stringify(data));
+                applyFeedToDOM(data);
             } catch (error) {
                 console.log("Error loading content");
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => { 
-            initLocation(); 
-            updateNotiUI(); 
-            fetchPrayerTimes(); 
-            loadAppConfig(); 
-            loadDynamicFeed(); 
-        });
+        // স্ক্রিপ্ট লোড হওয়ার সাথে সাথেই রান হবে (DOMContentLoaded এর জন্য অপেক্ষা করে সময় নষ্ট করবে না)
+        initLocation(); 
+        updateNotiUI(); 
+        loadAppConfig(); 
+        loadDynamicFeed(); 
+        fetchPrayerTimes();
     </script>
 </body>
 </html>
-
