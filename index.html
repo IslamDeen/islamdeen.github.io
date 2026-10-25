@@ -812,6 +812,14 @@
             }
         }
 
+        // অদৃশ্য ক্যারেক্টার (\u200B) পরিষ্কার করে JSON রিড করার ফাংশন
+        async function fetchCleanJSON(url) {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (!res.ok) throw new Error('Not found');
+            const text = await res.text();
+            return JSON.parse(text.replace(/[\u200B-\u200D\uFEFF]/g, ''));
+        }
+
         async function loadAppConfig() {
             const cachedStr = localStorage.getItem('dynamic_app_config');
             if (cachedStr) {
@@ -822,15 +830,16 @@
                 } catch (e) {}
             }
             try {
-                const res = await fetch('control/app-config.json', { cache: 'no-store' });
-                if (!res.ok) return;
-                const config = await res.json();
-                const freshStr = JSON.stringify(config);
-                if (freshStr !== cachedStr) {
-                    localStorage.setItem('dynamic_app_config', freshStr);
-                    applyBrandAndPWA(config);
-                    renderAudioAndCategories(config);
+                let config;
+                try {
+                    config = await fetchCleanJSON('control/app-config.json');
+                } catch (err) {
+                    config = await fetchCleanJSON('app-config.json');
                 }
+                const freshStr = JSON.stringify(config);
+                localStorage.setItem('dynamic_app_config', freshStr);
+                applyBrandAndPWA(config);
+                renderAudioAndCategories(config);
             } catch (e) {}
         }
 
@@ -840,14 +849,15 @@
                 try { renderContentData(JSON.parse(cachedStr)); } catch (e) {}
             }
             try {
-                const res = await fetch('control/content.json', { cache: 'no-store' });
-                if (!res.ok) return;
-                const data = await res.json();
-                const freshStr = JSON.stringify(data);
-                if (freshStr !== cachedStr) {
-                    localStorage.setItem('dynamic_app_feed', freshStr);
-                    renderContentData(data);
+                let data;
+                try {
+                    data = await fetchCleanJSON('control/content.json');
+                } catch (err) {
+                    data = await fetchCleanJSON('content.json');
                 }
+                const freshStr = JSON.stringify(data);
+                localStorage.setItem('dynamic_app_feed', freshStr);
+                renderContentData(data);
             } catch (e) {}
         }
 
