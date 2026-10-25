@@ -1,11 +1,11 @@
 {
 "_নির্দেশনা": "অ্যাপটি অন্য কাউকে দিলে সে শুধু এই ফাইলটিতে নিজের অ্যাপের নাম, লোগো এবং নিচে নিজের নাম বসালেই পুরো ওয়েবসাইট ও ইন্সটল হওয়া অ্যাপ (PWA) তার নামে হয়ে যাবে।",
-​"appName": "Islam",
+"appName": "Islam",
 "appDescription": "A complete Islamic application for Bangladesh.",
 "logoUrl": "logo.png",
 "themeColor": "#1b6b5c",
 "backgroundColor": "#f8fafc",
-​"footer": {
+"footer": {
 "active": true,
 "nameText": "Developed by Rafid Islam",
 "nameUrl": "https://www.youtube.com/@MrRafid4",
