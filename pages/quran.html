@@ -13,522 +13,1480 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { teal: { DEFAULT: '#1a897e', light: '#f0fdfa' } },
-                    fontFamily: { bangla: ['Noto Sans Bengali', 'sans-serif'], arabic: ['Amiri', 'serif'] }
+                    colors: {
+                        teal: {
+                            DEFAULT: '#0d9488',
+                            dark: '#0f766e',
+                            light: '#f0fdfa',
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e'
+                        }
+                    },
+                    fontFamily: {
+                        bangla: ['Noto Sans Bengali', 'sans-serif'],
+                        arabic: ['Amiri', 'serif']
+                    }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Noto Sans Bengali', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #f8fafc; }
-        .arabic-text { font-family: 'Amiri', serif; line-height: 1.8; }
-        ::-webkit-scrollbar { display: none; }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #f8fafc;
+            overscroll-behavior-y: none;
+            user-select: none;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            line-height: 2.0;
+            direction: rtl;
+        }
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
         
-        /* Smooth Card Transition */
+        /* Smooth Verse Card Transition */
         .v-card {
-            transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.3s ease;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
         }
 
-        /* Beautiful Highlight Active Card Style */
+        /* Active Playing Card Highlight */
         .active-card {
             background-color: #f0fdfa !important;
-            border-color: #5eead4 !important;
-            box-shadow: 0 4px 10px rgba(45, 212, 191, 0.15) !important;
-            transform: scale(1.02);
-            z-index: 10;
+            border-color: #2dd4bf !important;
+            box-shadow: 0 6px 16px -3px rgba(13, 148, 136, 0.16) !important;
+        }
+        .active-card .ayah-badge {
+            background-color: #0d9488 !important;
+            color: #ffffff !important;
+            border-color: #0d9488 !important;
+        }
+
+        /* Interactive Button Press Effect */
+        .btn-press {
+            transition: transform 0.12s ease, opacity 0.12s ease;
+        }
+        .btn-press:active {
+            transform: scale(0.93);
         }
 
         /* Animations */
-        .btn-press:active { transform: scale(0.9); }
-        .fade-in { animation: fadeIn 0.25s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in {
+            animation: fadeIn 0.22s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pulse dot for active timer / audio */
+        @keyframes softPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.88); }
+        }
+        .pulse-dot {
+            animation: softPulse 1.8s infinite ease-in-out;
+        }
     </style>
 </head>
-<body class="text-gray-800 pb-16">
+<body class="text-gray-800 pb-28 min-h-screen relative">
 
-    <!-- Ultra Compact Header -->
-    <header class="bg-white sticky top-0 z-40 px-3 py-2.5 flex items-center gap-2.5 shadow-sm border-b border-gray-100">
-        <button id="btn-back" class="hidden p-1.5 btn-press text-gray-600 bg-gray-50 rounded-full" onclick="navigateBack()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
-        </button>
-        <h1 id="header-title" class="text-[16px] font-bold text-gray-800">আল কুরআন</h1>
-    </header>
-
-    <!-- Main Lists Section -->
-    <main id="main-container">
-        <!-- Compact Segmented Control -->
-        <div class="px-3 py-2 bg-white border-b border-gray-100" id="tabs-container">
-            <div class="flex bg-gray-100 rounded-lg p-0.5">
-                <button onclick="switchTab('home')" id="tab-home" class="flex-1 py-1.5 text-[13px] font-semibold rounded-md transition-colors text-gray-500">হোম</button>
-                <button onclick="switchTab('surah')" id="tab-surah" class="flex-1 py-1.5 text-[13px] font-semibold rounded-md transition-colors bg-white text-teal shadow-sm">সূরা</button>
-                <button onclick="switchTab('para')" id="tab-para" class="flex-1 py-1.5 text-[13px] font-semibold rounded-md transition-colors text-gray-500">পারা</button>
+    <!-- Sticky App Header -->
+    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 px-3 py-2.5 flex items-center justify-between shadow-sm border-b border-gray-100">
+        <div class="flex items-center gap-2.5 min-w-0">
+            <button id="btn-back" class="hidden p-1.5 btn-press text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full shrink-0" onclick="navigateBack()" aria-label="ফিরে যান">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <div class="truncate">
+                <h1 id="header-title" class="text-[16px] font-bold text-gray-800 truncate leading-tight">আল কুরআন</h1>
+                <p id="header-subtitle" class="text-[10px] text-gray-400 hidden truncate">তিলাওয়াত ও বাংলা অনুবাদ</p>
             </div>
         </div>
 
-        <div class="px-2 py-2 hidden fade-in" id="view-home">
-            <div id="history-list" class="flex flex-col gap-1.5"></div>
-            <p id="empty-history" class="text-center text-[12px] text-gray-400 mt-8 hidden">কোনো হিস্ট্রি নেই</p>
+        <!-- Right Header Actions: Sleep Timer Button -->
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openSleepModal()" id="header-sleep-btn" class="btn-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-700 border border-gray-200/70">
+                <svg class="w-3.5 h-3.5 text-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+                <span id="header-sleep-text">স্লিপ টাইমার</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Lists Container -->
+    <main id="main-container" class="max-w-2xl mx-auto">
+        <!-- Segmented Navigation Tabs -->
+        <div class="px-3 pt-2.5 pb-2 bg-white border-b border-gray-100 sticky top-[49px] z-30" id="tabs-container">
+            <div class="flex bg-gray-100/90 rounded-xl p-1">
+                <button onclick="switchTab('home')" id="tab-home" class="flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all text-gray-500 flex items-center justify-center gap-1">
+                    <span>রিসেন্ট</span>
+                    <span id="recent-count-badge" class="hidden text-[10px] bg-teal/15 text-teal px-1.5 py-0.2 rounded-full font-bold">০</span>
+                </button>
+                <button onclick="switchTab('surah')" id="tab-surah" class="flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all bg-white text-teal shadow-sm">সূরা</button>
+                <button onclick="switchTab('para')" id="tab-para" class="flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all text-gray-500">পারা</button>
+            </div>
+
+            <!-- Search Bar (Visible in Surah & Para tabs) -->
+            <div id="search-wrapper" class="mt-2 relative">
+                <input
+                    id="search-input"
+                    type="text"
+                    oninput="handleSearch(this.value)"
+                    placeholder="সূরা বা নম্বর দিয়ে খুঁজুন (যেমন: ইয়াসিন, ৩৬, ফাতিহা)..."
+                    class="w-full bg-gray-50 border border-gray-200/80 rounded-xl pl-9 pr-8 py-2 text-[12px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-teal focus:bg-white transition-all"
+                >
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <button id="search-clear" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="px-2 py-2 fade-in" id="view-surah">
+        <!-- TAB 1: RECENT / HOME VIEW -->
+        <div class="px-2.5 py-2.5 hidden fade-in" id="view-home">
+            <!-- Header bar inside Recent with Clear All option -->
+            <div id="history-header" class="hidden flex items-center justify-between px-1 mb-2">
+                <span class="text-[12px] font-semibold text-gray-500">সর্বশেষ পঠিত ও শ্রুত তালিকা</span>
+                <button onclick="clearAllHistory()" class="btn-press text-[11px] font-semibold text-red-500 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span>সব মুছুন</span>
+                </button>
+            </div>
+
+            <div id="history-list" class="flex flex-col gap-2"></div>
+
+            <!-- Empty State for Recent -->
+            <div id="empty-history" class="text-center py-14 px-4 hidden">
+                <div class="w-12 h-12 rounded-full bg-teal-50 text-teal flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="text-[14px] font-bold text-gray-700">কোনো রিসেন্ট হিস্ট্রি নেই</p>
+                <p class="text-[12px] text-gray-400 mt-1">আপনি যে সূরা বা পারা শুনবেন বা পড়বেন, তা যে আয়াত পর্যন্ত শুনেছেন ঠিক সেখান থেকে পুনরায় চালু করার জন্য এখানে জমা থাকবে।</p>
+                <button onclick="switchTab('surah')" class="mt-4 btn-press bg-teal text-white text-[12px] font-semibold px-4 py-2 rounded-xl shadow-sm">সূরা তালিকা দেখুন</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: SURAH LIST VIEW -->
+        <div class="px-2.5 py-2.5 fade-in" id="view-surah">
+            <!-- Quick Last Played Resume Card on top of Surah tab -->
+            <div id="quick-resume-banner" class="hidden mb-2.5"></div>
+
             <div id="surah-list" class="flex flex-col gap-1.5">
                 <div class="text-center py-12 text-teal">
                     <svg class="w-6 h-6 animate-spin mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <p class="text-[12px] text-gray-400 mt-2">সূরা তালিকা লোড হচ্ছে...</p>
                 </div>
             </div>
         </div>
 
-        <div class="px-2 py-2 hidden fade-in" id="view-para">
+        <!-- TAB 3: PARA LIST VIEW -->
+        <div class="px-2.5 py-2.5 hidden fade-in" id="view-para">
             <div id="para-list" class="flex flex-col gap-1.5"></div>
         </div>
     </main>
 
     <!-- Reader Section -->
-    <main id="reader-container" class="hidden relative">
-        <!-- Compact Info Bar -->
-        <div class="sticky top-[45px] z-30 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
-            <div class="flex justify-between items-center px-3 py-1.5">
-                <span id="reader-revelation" class="text-[10px] font-bold text-teal bg-teal-50 px-2 py-0.5 rounded">মাক্কী</span>
-                <div class="text-center">
-                    <div id="reader-title" class="font-bold text-[14px] text-gray-800 leading-tight">আল ফাতিহা</div>
-                    <div id="reader-subtitle" class="text-[10px] text-gray-500 mt-0.5">সূচনা</div>
+    <main id="reader-container" class="hidden relative max-w-2xl mx-auto">
+        <!-- Sticky Reader Subheader Info Bar -->
+        <div class="sticky top-[49px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center px-3 py-2">
+                <span id="reader-revelation" class="text-[10px] font-bold text-teal bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">মাক্কী</span>
+                <div class="text-center truncate px-2">
+                    <div id="reader-title" class="font-bold text-[14px] text-gray-800 leading-tight truncate">আল ফাতিহা</div>
+                    <div id="reader-subtitle" class="text-[10px] text-gray-500 mt-0.5 truncate">সূচনা</div>
                 </div>
-                <span id="reader-count" class="text-[10px] font-bold text-teal bg-teal-50 px-2 py-0.5 rounded">৭ আয়াত</span>
+                <span id="reader-count" class="text-[10px] font-bold text-teal bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-100">৭ আয়াত</span>
             </div>
         </div>
 
-        <div id="verses-container" class="px-2 py-2 flex flex-col gap-1.5"></div>
+        <div id="verses-container" class="px-2.5 py-2.5 flex flex-col gap-2"></div>
         
-        <div id="reader-loading" class="text-center py-10 text-teal hidden">
-            <svg class="w-6 h-6 animate-spin mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <p class="mt-2 text-[12px] font-medium">লোড হচ্ছে...</p>
+        <div id="reader-loading" class="text-center py-14 text-teal hidden">
+            <svg class="w-7 h-7 animate-spin mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <p class="mt-2.5 text-[12px] font-medium text-gray-600">আয়াত ও অডিও প্রস্তুত হচ্ছে...</p>
         </div>
     </main>
 
-    <!-- Ultra Compact Floating Player -->
-    <div id="bottom-player" class="fixed bottom-2 left-2 right-2 bg-gray-900 text-white rounded-xl px-3 py-2 shadow-2xl z-50 flex items-center justify-between transition-transform transform translate-y-[150%] duration-300">
-        <div class="flex flex-col truncate pr-2">
-            <span id="player-title" class="font-bold text-[13px] truncate">আল ফাতিহা</span>
-            <div class="flex items-center gap-1.5 mt-0.5">
-                <span id="player-subtitle" class="text-[10px] text-gray-300">আয়াত ১</span>
-                <span id="player-status" class="text-[10px] text-teal-300 hidden font-medium">লোডিং...</span>
-            </div>
+    <!-- Ultra Compact Floating Audio Player -->
+    <div id="bottom-player" class="fixed bottom-2.5 left-2.5 right-2.5 max-w-2xl mx-auto bg-gray-900/95 backdrop-blur-md text-white rounded-2xl px-3.5 py-2.5 shadow-2xl border border-white/10 z-50 transition-transform transform translate-y-[160%] duration-300">
+        <!-- Thin Progress Bar on top of player -->
+        <div class="w-full bg-gray-700/80 h-1 rounded-full overflow-hidden mb-2">
+            <div id="player-progress" class="bg-teal-500 h-full w-0 transition-all duration-150"></div>
         </div>
-        
-        <div class="flex items-center gap-2.5">
-            <button onclick="playPrev()" class="p-1.5 btn-press text-gray-300 active:text-white">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-            </button>
-            <button id="btn-play-pause" onclick="togglePlayPause()" class="w-9 h-9 btn-press flex items-center justify-center rounded-full bg-teal-500 text-white shadow-md">
-                <!-- Play -->
-                <svg id="icon-play" class="w-4 h-4 ml-0.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                <!-- Pause -->
-                <svg id="icon-pause" class="w-4 h-4 hidden fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-            <button onclick="playNext(true)" class="p-1.5 btn-press text-gray-300 active:text-white">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-            </button>
+
+        <div class="flex items-center justify-between gap-2">
+            <!-- Track Info (Clicking scrolls to active verse) -->
+            <div onclick="scrollToCurrentPlayingVerse()" class="flex flex-col truncate pr-1 cursor-pointer flex-1">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-teal-500 pulse-dot shrink-0" id="playing-dot"></span>
+                    <span id="player-title" class="font-bold text-[13px] truncate">আল ফাতিহা</span>
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
+                    <span id="player-subtitle" class="text-[11px] text-gray-300 font-medium">আয়াত ১</span>
+                    <span id="player-status" class="text-[10px] text-teal-300 hidden font-medium">লোডিং...</span>
+                    <span id="player-sleep-badge" onclick="event.stopPropagation(); openSleepModal();" class="hidden text-[10px] bg-teal-500/20 text-teal-200 border border-teal-400/30 px-1.5 py-0.2 rounded font-semibold"></span>
+                </div>
+            </div>
+            
+            <!-- Playback Controls -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                <!-- Sleep Timer Quick Icon on Player -->
+                <button onclick="openSleepModal()" class="p-2 btn-press text-gray-300 hover:text-white rounded-full relative" title="স্লিপ টাইমার">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                    <span id="player-sleep-dot" class="hidden absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-teal-400 rounded-full"></span>
+                </button>
+
+                <!-- Previous Verse -->
+                <button onclick="playPrev()" class="p-1.5 btn-press text-gray-300 active:text-white">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                </button>
+
+                <!-- Play / Pause -->
+                <button id="btn-play-pause" onclick="togglePlayPause()" class="w-10 h-10 btn-press flex items-center justify-center rounded-full bg-teal-500 hover:bg-teal-600 text-white shadow-lg">
+                    <svg id="icon-play" class="w-4 h-4 ml-0.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="icon-pause" class="w-4 h-4 hidden fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+
+                <!-- Next Verse -->
+                <button onclick="playNext(true)" class="p-1.5 btn-press text-gray-300 active:text-white">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- SINGLE Audio Element for Rock Solid Background Stability -->
-    <audio id="main-audio" playsinline></audio>
+    <!-- SLEEP TIMER MODAL (স্লিপ টাইমার ও ম্যানুয়াল ইনপুট মোডাল) -->
+    <div id="sleep-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-xs p-0 sm:p-4 transition-opacity">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-teal-50 text-teal flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-[15px] text-gray-800">স্লিপ টাইমার (ঘুমানোর মোড)</h3>
+                        <p class="text-[11px] text-gray-400">নির্ধারিত সময় পর তিলাওয়াত অটোমেটিক বন্ধ হবে</p>
+                    </div>
+                </div>
+                <button onclick="closeSleepModal()" class="p-1.5 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Active Timer Countdown Status Box -->
+            <div id="sleep-active-box" class="hidden my-3.5 p-3.5 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-between">
+                <div>
+                    <span class="text-[11px] text-teal-700 font-semibold block">টাইমার চালু আছে</span>
+                    <span id="sleep-modal-countdown" class="text-[20px] font-bold text-teal-700">২০:০০</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="addSleepMinutes(5)" class="btn-press px-2.5 py-1.5 bg-white text-teal border border-teal-200 rounded-xl text-[11px] font-bold shadow-xs">+৫ মিনিট</button>
+                    <button onclick="cancelSleepTimer()" class="btn-press px-3 py-1.5 bg-red-500 text-white rounded-xl text-[11px] font-bold shadow-xs">বন্ধ করুন</button>
+                </div>
+            </div>
+
+            <!-- Preset Best Times Grid -->
+            <div class="mt-3.5">
+                <label class="text-[12px] font-semibold text-gray-600 block mb-2">জনপ্রিয় সময় সিলেক্ট করুন:</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setSleepTimer(10)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="10">১০ মিনিট</button>
+                    <button onclick="setSleepTimer(15)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="15">১৫ মিনিট</button>
+                    <button onclick="setSleepTimer(20)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="20">২০ মিনিট</button>
+                    <button onclick="setSleepTimer(30)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="30">৩০ মিনিট</button>
+                    <button onclick="setSleepTimer(45)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="45">৪৫ মিনিট</button>
+                    <button onclick="setSleepTimer(60)" class="sleep-preset-btn btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all" data-min="60">৬০ মিনিট</button>
+                </div>
+                <!-- End of Current Surah Option -->
+                <button onclick="setSleepEndOfChapter()" id="btn-sleep-end-chap" class="w-full mt-2 btn-press py-2.5 px-3 rounded-xl border border-gray-200 text-[12px] font-semibold text-gray-700 hover:border-teal hover:bg-teal-50 transition-all flex items-center justify-center gap-1.5">
+                    <span>চলমান সূরা বা পারা শেষ হলে বন্ধ হবে</span>
+                </button>
+            </div>
+
+            <!-- Custom Manual Input Box (নিজের মনের মতো সময় বসানোর ঘর) -->
+            <div class="mt-4 pt-3.5 border-t border-gray-100">
+                <label for="custom-sleep-input" class="text-[12px] font-semibold text-gray-600 block mb-2">অথবা নিজের মনের মতো মিনিট লিখুন:</label>
+                <div class="flex items-center gap-2">
+                    <input
+                        id="custom-sleep-input"
+                        type="number"
+                        min="1"
+                        max="720"
+                        placeholder="যেমন: ২৫ বা ৯০ মিনিট..."
+                        class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-[13px] text-gray-800 focus:outline-none focus:border-teal focus:bg-white"
+                        onkeydown="if(event.key==='Enter') applyCustomSleepTimer()"
+                    >
+                    <button onclick="applyCustomSleepTimer()" class="btn-press bg-teal hover:bg-teal-dark text-white font-bold text-[13px] px-4 py-2.5 rounded-xl shadow-sm shrink-0">
+                        সেট করুন
+                    </button>
+                </div>
+                <p id="custom-sleep-error" class="text-[11px] text-red-500 mt-1 hidden">অনুগ্রহ করে ১ থেকে ৭২০ মিনিটের মধ্যে যেকোনো সংখ্যা লিখুন।</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification (Replaces browser alert/confirm) -->
+    <div id="app-toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-gray-900/95 text-white text-[12px] font-medium px-4 py-2 rounded-full shadow-lg pointer-events-none opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Primary Audio Element + Preload Pool for Zero-Latency Background Transitions -->
+    <audio id="main-audio" preload="auto" playsinline></audio>
+    <audio id="preload-audio-1" preload="auto" playsinline class="hidden"></audio>
+    <audio id="preload-audio-2" preload="auto" playsinline class="hidden"></audio>
 
     <script>
         const API = 'https://api.quran.com/api/v4';
         const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-        const tbn = num => num.toString().replace(/\d/g, d => bnDigits[d]);
+        const tbn = num => (num ?? '').toString().replace(/\d/g, d => bnDigits[d]);
+        const fromBnDigits = str => str.replace(/[০-৯]/g, d => bnDigits.indexOf(d));
+
+        // Popular Bangla Phonetic Surah Names for easy Bangla Search
+        const banglaSurahNames = {
+            1: 'আল ফাতিহা ফাতেহা', 2: 'আল বাকারা বাকারাহ', 3: 'আল ইমরান', 4: 'আন নিসা', 5: 'আল মায়িদাহ মায়েদা',
+            6: 'আল আনআম', 7: 'আল আরাফ', 8: 'আল আনফাল', 9: 'আত তাওবাহ তওবা', 10: 'ইউনুস',
+            11: 'হুদ', 12: 'ইউসুফ', 13: 'আর রাদ', 14: 'ইবরাহীম ইব্রাহিম', 15: 'আল হিজর',
+            16: 'আন নাহল', 17: 'বনী ইসরাঈল ইসরাইল', 18: 'আল কাহফ কাহাফ', 19: 'মারইয়াম মরিয়ম', 20: 'ত্বোয়া-হা ত্বহা',
+            21: 'আল আম্বিয়া', 22: 'আল হাজ্জ হজ্জ', 23: 'আল মুমিনুন', 24: 'আন নূর নুর', 25: 'আল ফুরকান',
+            26: 'আশ শুআরা', 27: 'আন নামল', 28: 'আল কাসাস', 29: 'আল আনকাবুত', 30: 'আর রূম রুম',
+            31: 'লুকমান', 32: 'আস সাজদাহ সেজদা', 33: 'আল আহযাব', 34: 'সাবা', 35: 'ফাতির',
+            36: 'ইয়াসিন ইয়াসীন ইয়াছিন', 37: 'আস সাফফাত', 38: 'সোয়াদ', 39: 'আয যুমার', 40: 'গাফির মুমিন',
+            41: 'হা-মীম সাজদাহ ফুসসিলাত', 42: 'আশ শূরা', 43: 'আয যুখরুফ', 44: 'আদ দুখান', 45: 'আল জাসিয়াহ',
+            46: 'আল আহকাফ', 47: 'মুহাম্মাদ মোহাম্মদ', 48: 'আল ফাতহ', 49: 'আল হুজুরাত', 50: 'ক্বাফ',
+            51: 'আয যারিয়াত', 52: 'আত তূর', 53: 'আন নাজম', 54: 'আল কামার', 55: 'আর রহমান রাহমান',
+            56: 'আল ওয়াকিয়াহ ওয়াকিয়া', 57: 'আল হাদীদ', 58: 'আল মুজাদালাহ', 59: 'আল হাশর', 60: 'আল মুমতাহিনাহ',
+            61: 'আস সফ', 62: 'আল জুমুআহ জুম্মা', 63: 'আল মুনাফিকুন', 64: 'আত তাগাবুন', 65: 'আত তালাক',
+            66: 'আত তাহরীম', 67: 'আল মুলক তাবারাকাল্লাজি', 68: 'আল কলম', 69: 'আল হাক্কাহ', 70: 'আল মাআরিজ',
+            71: 'নূহ নুহ', 72: 'আল জিন জ্বীন', 73: 'আল মুযযাম্মিল মুজ্জাম্মিল', 74: 'আল মুদ্দাসসির', 75: 'আল কিয়ামাহ',
+            76: 'আদ দাহর ইনসান', 77: 'আল মুরসালাত', 78: 'আন নাবা আম্মা পারা', 79: 'আন নাযিয়াত', 80: 'আবাসা',
+            81: 'আত তাকভীর', 82: 'আল ইনফিতার', 83: 'আল মুতাফফিফীন', 84: 'আল ইনশিকাক', 85: 'আল বুরূজ',
+            86: 'আত তারিক', 87: 'আল আলা', 88: 'আল গাশিয়াহ', 89: 'আল ফাজর ফজর', 90: 'আল বালাদ',
+            91: 'আশ শামস', 92: 'আল লাইল', 93: 'আদ দুহা', 94: 'আল ইনশিরাহ আলাম নাশরাহ', 95: 'আত তীন তিন',
+            96: 'আল আলাক্ব ইকরা', 97: 'আল কদর ক্বদর', 98: 'আল বাইয়্যিনাহ', 99: 'আয যিলযাল', 100: 'আল আদিয়াত',
+            101: 'আল কারিয়াহ', 102: 'আত তাকাসুর', 103: 'আল আসর আছর', 104: 'আল হুমাযাহ', 105: 'আল ফীল ফিল',
+            106: 'কুরাইশ', 107: 'আল মাউন', 108: 'আল কাউসার কাওসার', 109: 'আল কাফিরুন', 110: 'আন নাসর',
+            111: 'আল লাহাব মাসাদ', 112: 'আল ইখলাস এখলাস', 113: 'আল ফালাক', 114: 'আন নাস নাছ'
+        };
+
+        // Safe Storage Wrapper (Works reliably even inside sub-pages / iframes)
+        const memoryStore = {};
+        const safeStorage = {
+            get(key, fallback = null) {
+                try {
+                    const val = localStorage.getItem(key);
+                    return val ? JSON.parse(val) : fallback;
+                } catch (e) {
+                    return memoryStore[key] !== undefined ? memoryStore[key] : fallback;
+                }
+            },
+            set(key, value) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (e) {
+                    memoryStore[key] = value;
+                }
+            }
+        };
 
         let state = {
-            surahs: [], paras: [], tab: 'surah',
-            queue: [], pIdx: -1, isPlaying: false, isFetching: false,
-            uId: null, uType: 'surah'
+            surahs: [],
+            paras: [],
+            tab: 'surah',
+            searchQuery: '',
+            queue: [],
+            pIdx: -1,
+            isPlaying: false,
+            isFetching: false,
+            uId: null,
+            uType: 'surah',
+            activeRequestId: 0,
+            // Sleep Timer State
+            sleepEndTime: null,       // Timestamp in ms when playback should stop
+            sleepEndOfChapter: false, // Stop when current Surah/Para ends
+            sleepInterval: null
         };
 
         const audioEl = document.getElementById('main-audio');
+        const preloadEl1 = document.getElementById('preload-audio-1');
+        const preloadEl2 = document.getElementById('preload-audio-2');
+
         const dom = {
             p: document.getElementById('bottom-player'),
-            iPlay: document.getElementById('icon-play'), iPause: document.getElementById('icon-pause'),
-            status: document.getElementById('player-status')
+            iPlay: document.getElementById('icon-play'),
+            iPause: document.getElementById('icon-pause'),
+            status: document.getElementById('player-status'),
+            progress: document.getElementById('player-progress'),
+            playingDot: document.getElementById('playing-dot')
         };
 
-        // --- Screen Wake Lock API (Keep screen ON) ---
-        let wakeLock = null;
-        let idleTimer = null;
-        const IDLE_TIMEOUT = 30 * 60 * 1000; // 30 Minutes
+        // --- Web Audio API Background Keep-Alive Engine ---
+        // Prevents mobile OS (Android/iOS) from dropping audio focus during the millisecond transition between verse MP3s
+        let audioCtx = null;
+        let keepAliveOsc = null;
+        let keepAliveGain = null;
 
+        function startBackgroundKeepAlive() {
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextClass) return;
+                if (!audioCtx) {
+                    audioCtx = new AudioContextClass();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                if (!keepAliveOsc) {
+                    keepAliveOsc = audioCtx.createOscillator();
+                    keepAliveGain = audioCtx.createGain();
+                    // Virtually zero gain (inaudible to human ear, but keeps OS audio session active)
+                    keepAliveGain.gain.value = 0.00001;
+                    keepAliveOsc.frequency.value = 1;
+                    keepAliveOsc.connect(keepAliveGain);
+                    keepAliveGain.connect(audioCtx.destination);
+                    keepAliveOsc.start();
+                }
+            } catch (err) {}
+        }
+
+        function stopBackgroundKeepAlive() {
+            try {
+                if (keepAliveOsc) {
+                    keepAliveOsc.stop();
+                    keepAliveOsc.disconnect();
+                    keepAliveOsc = null;
+                }
+                if (audioCtx && audioCtx.state === 'running') {
+                    audioCtx.suspend();
+                }
+            } catch (err) {}
+        }
+
+        // --- Screen Wake Lock API ---
+        let wakeLock = null;
         async function requestWakeLock() {
-            if ('wakeLock' in navigator) {
+            if ('wakeLock' in navigator && document.visibilityState === 'visible') {
                 try {
                     if (!wakeLock) {
                         wakeLock = await navigator.wakeLock.request('screen');
+                        wakeLock.addEventListener('release', () => { wakeLock = null; });
                     }
-                } catch (err) { console.log("WakeLock error:", err); }
+                } catch (err) {}
             }
         }
 
         function releaseWakeLock() {
             if (wakeLock) {
-                wakeLock.release().then(() => { wakeLock = null; });
+                wakeLock.release().then(() => { wakeLock = null; }).catch(() => {});
             }
         }
 
-        function resetActivityTimer() {
-            requestWakeLock();
-            clearTimeout(idleTimer);
-            idleTimer = setTimeout(() => {
-                // Only allow screen to turn off if audio is paused
-                if (!state.isPlaying) releaseWakeLock();
-            }, IDLE_TIMEOUT);
+        // Toast Helper
+        let toastTimeout = null;
+        function showToast(msg) {
+            const t = document.getElementById('app-toast');
+            t.textContent = msg;
+            t.classList.remove('opacity-0');
+            t.classList.add('opacity-100');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                t.classList.remove('opacity-100');
+                t.classList.add('opacity-0');
+            }, 2600);
         }
 
+        // --- Initialization ---
         async function init() {
             setupAudioEngine();
             genParas();
-            loadHist();
             await loadSurahs();
+            loadHist();
             switchTab('surah');
 
-            // Activity Listeners for Wake Lock
-            document.addEventListener('touchstart', resetActivityTimer, {passive: true});
-            document.addEventListener('scroll', resetActivityTimer, {passive: true});
-            document.addEventListener('click', resetActivityTimer, {passive: true});
-
-            // Restore UI logic when returning from background
+            // Sync UI when user returns to the app from screen-off or background
             document.addEventListener("visibilitychange", () => {
-                if(document.visibilityState === 'visible') {
-                    resetActivityTimer();
-                    if(state.pIdx >= 0 && state.queue.length > 0) {
+                if (document.visibilityState === 'visible') {
+                    if (state.isPlaying) requestWakeLock();
+                    if (state.pIdx >= 0 && state.queue.length > 0) {
                         const track = state.queue[state.pIdx];
-                        if(track.sId !== state.uId) {
+                        const isReaderOpen = !document.getElementById('reader-container').classList.contains('hidden');
+                        if (isReaderOpen && (track.sId !== state.uId || track.type !== state.uType)) {
                             updateReaderHeader(track.sId, track.type);
                             renderVerses(state.queue.filter(v => v.sId === track.sId && v.type === track.type));
                         }
-                        updateUI(track, true); // Auto Scroll to center
+                        updateUI(track, isReaderOpen);
                     }
+                }
+            });
+
+            // Handle browser/phone hardware back button gracefully inside sub-page
+            window.addEventListener('popstate', () => {
+                const isReaderOpen = !document.getElementById('reader-container').classList.contains('hidden');
+                if (isReaderOpen) {
+                    closeReaderView();
                 }
             });
         }
 
-        // --- Compact UI Navigation ---
+        // --- Navigation & Tabs ---
         function switchTab(t) {
             state.tab = t;
             ['home', 'surah', 'para'].forEach(x => {
                 const b = document.getElementById(`tab-${x}`);
                 const v = document.getElementById(`view-${x}`);
                 if (x === t) {
-                    b.className = "flex-1 py-1.5 text-[13px] font-semibold rounded-md transition-colors bg-white text-teal shadow-sm";
+                    b.className = "flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all bg-white text-teal shadow-sm flex items-center justify-center gap-1";
                     v.classList.remove('hidden');
                 } else {
-                    b.className = "flex-1 py-1.5 text-[13px] font-semibold rounded-md transition-colors text-gray-500 bg-transparent shadow-none";
+                    b.className = "flex-1 py-1.5 text-[13px] font-semibold rounded-lg transition-all text-gray-500 bg-transparent shadow-none flex items-center justify-center gap-1";
                     v.classList.add('hidden');
                 }
             });
-            if(t === 'home') loadHist();
+
+            const searchWrapper = document.getElementById('search-wrapper');
+            const searchInput = document.getElementById('search-input');
+            if (t === 'home') {
+                searchWrapper.classList.add('hidden');
+                loadHist();
+            } else {
+                searchWrapper.classList.remove('hidden');
+                searchInput.placeholder = t === 'surah'
+                    ? 'সূরা বা নম্বর দিয়ে খুঁজুন (যেমন: ইয়াসিন, ৩৬, ফাতিহা)...'
+                    : 'পারা নম্বর দিয়ে খুঁজুন (যেমন: ১, ৩০)...';
+                handleSearch(searchInput.value);
+            }
         }
 
-        function navigateBack() {
+        function closeReaderView() {
             document.getElementById('main-container').classList.remove('hidden');
             document.getElementById('reader-container').classList.add('hidden');
             document.getElementById('btn-back').classList.add('hidden');
             document.getElementById('header-title').textContent = "আল কুরআন";
-            if(state.tab === 'home') loadHist();
+            loadHist();
+            renderQuickResumeBanner();
         }
 
-        // --- Fetch & Render ---
+        function navigateBack() {
+            closeReaderView();
+        }
+
+        // --- Search Filter ---
+        function handleSearch(query) {
+            state.searchQuery = query.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear');
+            if (state.searchQuery.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const normalizedQuery = fromBnDigits(state.searchQuery);
+
+            if (state.tab === 'surah') {
+                if (!normalizedQuery) {
+                    renderSurahs(state.surahs);
+                    return;
+                }
+                const filtered = state.surahs.filter(s => {
+                    const bnName = banglaSurahNames[s.id] || '';
+                    return (
+                        s.id.toString() === normalizedQuery ||
+                        (s.name_simple && s.name_simple.toLowerCase().includes(normalizedQuery)) ||
+                        (s.name_complex && s.name_complex.toLowerCase().includes(normalizedQuery)) ||
+                        (s.name_arabic && s.name_arabic.includes(normalizedQuery)) ||
+                        (s.translated_name?.name && s.translated_name.name.toLowerCase().includes(normalizedQuery)) ||
+                        bnName.includes(normalizedQuery)
+                    );
+                });
+                renderSurahs(filtered);
+            } else if (state.tab === 'para') {
+                if (!normalizedQuery) {
+                    renderParas(state.paras);
+                    return;
+                }
+                const filtered = state.paras.filter(p =>
+                    p.id.toString().includes(normalizedQuery) ||
+                    p.name.toLowerCase().includes(normalizedQuery)
+                );
+                renderParas(filtered);
+            }
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('search-input');
+            input.value = '';
+            handleSearch('');
+            input.focus();
+        }
+
+        // --- Load & Render Surahs / Paras ---
         async function loadSurahs() {
-            if(localStorage.getItem('qs_final')) {
-                state.surahs = JSON.parse(localStorage.getItem('qs_final'));
-                renderSurahs(state.surahs); return;
+            const cached = safeStorage.get('qs_final_v2');
+            if (cached && Array.isArray(cached) && cached.length === 114) {
+                state.surahs = cached;
+                renderSurahs(state.surahs);
+                renderQuickResumeBanner();
+                return;
             }
             try {
                 const res = await fetch(`${API}/chapters?language=bn`);
-                state.surahs = (await res.json()).chapters;
-                localStorage.setItem('qs_final', JSON.stringify(state.surahs));
+                const data = await res.json();
+                state.surahs = data.chapters;
+                safeStorage.set('qs_final_v2', state.surahs);
                 renderSurahs(state.surahs);
-            } catch(e) { document.getElementById('surah-list').innerHTML = `<p class="text-red-500 text-[12px] text-center mt-4">ডেটা লোড ব্যর্থ। ইন্টারনেট চেক করুন।</p>`; }
+                renderQuickResumeBanner();
+            } catch (e) {
+                document.getElementById('surah-list').innerHTML = `
+                    <div class="text-center py-8 bg-red-50 rounded-xl border border-red-100 p-4">
+                        <p class="text-red-600 text-[13px] font-semibold">ডেটা লোড ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।</p>
+                        <button onclick="loadSurahs()" class="mt-2 bg-red-500 text-white text-[12px] px-4 py-1.5 rounded-lg font-semibold">আবার চেষ্টা করুন</button>
+                    </div>`;
+            }
         }
 
         function genParas() {
-            for(let i=1; i<=30; i++) state.paras.push({ id: i, name: `পারা ${tbn(i)}` });
+            state.paras = [];
+            for (let i = 1; i <= 30; i++) {
+                state.paras.push({ id: i, name: `পারা ${tbn(i)}` });
+            }
             renderParas(state.paras);
         }
 
-        // Circular CSS Badge (Completely replaces broken images/svgs)
-        const badgeHTML = (num) => `<div class="w-9 h-9 rounded-full border-[1.5px] border-teal-100 flex items-center justify-center font-bold text-teal bg-teal-50 shrink-0 shadow-sm"><span class="mt-0.5 text-[12px]">${num}</span></div>`;
+        const badgeHTML = (num) => `
+            <div class="w-9 h-9 rounded-full border border-teal-100 flex items-center justify-center font-bold text-teal bg-teal-50 shrink-0 shadow-xs">
+                <span class="mt-0.5 text-[12px]">${num}</span>
+            </div>`;
+
+        function getBanglaSurahTitle(s) {
+            return s.name_complex || s.name_simple || s.name_arabic;
+        }
 
         function renderSurahs(surahs) {
+            const container = document.getElementById('surah-list');
+            if (!surahs.length) {
+                container.innerHTML = `<p class="text-center text-gray-400 text-[13px] py-8">কোনো সূরা পাওয়া যায়নি</p>`;
+                return;
+            }
+            const hist = safeStorage.get('qh_final_v2', []);
             let h = '';
             surahs.forEach((s) => {
+                const savedItem = hist.find(x => x.id === s.id && x.type === 'surah');
+                const savedBadge = savedItem && savedItem.aNum > 1
+                    ? `<span class="text-[10px] bg-teal-50 text-teal px-1.5 py-0.2 rounded font-semibold border border-teal-100">আয়াত ${tbn(savedItem.aNum)}</span>`
+                    : '';
+
                 h += `
-                <div onclick="openRdr(${s.id}, 'surah')" class="bg-white rounded-[10px] border border-gray-100/80 p-2.5 flex items-center justify-between cursor-pointer btn-press active:bg-teal-50 transition-colors">
-                    <div class="flex items-center gap-3">
+                <div onclick="openRdr(${s.id}, 'surah', ${savedItem ? savedItem.aNum : 1}, ${savedItem ? savedItem.vId : 'null'})" class="bg-white rounded-xl border border-gray-100 p-2.5 flex items-center justify-between cursor-pointer btn-press active:bg-teal-50/60 hover:border-teal-200 transition-all shadow-2xs">
+                    <div class="flex items-center gap-3 min-w-0">
                         ${badgeHTML(tbn(s.id))}
-                        <div class="flex flex-col">
-                            <span class="font-bold text-[14px] text-gray-800">${s.name_complex || s.name_arabic}</span>
-                            <span class="text-[11px] text-gray-400 mt-0.5">${s.translated_name.name} • ${tbn(s.verses_count)} আয়াত</span>
+                        <div class="flex flex-col truncate">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-[14px] text-gray-800 truncate">${getBanglaSurahTitle(s)}</span>
+                                ${savedBadge}
+                            </div>
+                            <span class="text-[11px] text-gray-400 mt-0.5 truncate">${s.translated_name.name} • ${tbn(s.verses_count)} আয়াত</span>
                         </div>
                     </div>
-                    <div class="text-teal text-[20px] arabic-text font-bold pr-1 opacity-90">${s.name_arabic}</div>
+                    <div class="text-teal text-[20px] arabic-text font-bold pr-1 opacity-90 shrink-0">${s.name_arabic}</div>
                 </div>`;
             });
-            document.getElementById('surah-list').innerHTML = h;
+            container.innerHTML = h;
         }
 
         function renderParas(paras) {
+            const container = document.getElementById('para-list');
+            if (!paras.length) {
+                container.innerHTML = `<p class="text-center text-gray-400 text-[13px] py-8">কোনো পারা পাওয়া যায়নি</p>`;
+                return;
+            }
+            const hist = safeStorage.get('qh_final_v2', []);
             let h = '';
             paras.forEach((p) => {
+                const savedItem = hist.find(x => x.id === p.id && x.type === 'para');
+                const resumeInfo = savedItem
+                    ? `<span class="text-[11px] text-teal font-semibold bg-teal-50 px-2 py-0.5 rounded-lg border border-teal-100">${savedItem.vKeyName || ('আয়াত ' + tbn(savedItem.aNum))} থেকে চালু</span>`
+                    : `<span class="text-[11px] text-gray-400">সম্পূর্ণ পারা তিলাওয়াত</span>`;
+
                 h += `
-                <div onclick="openRdr(${p.id}, 'para')" class="bg-white rounded-[10px] border border-gray-100/80 p-3 flex items-center gap-3 cursor-pointer btn-press active:bg-teal-50 transition-colors">
-                    ${badgeHTML(tbn(p.id))}
-                    <span class="font-bold text-[14px] text-gray-800">${p.name}</span>
+                <div onclick="openRdr(${p.id}, 'para', ${savedItem ? savedItem.aNum : 1}, ${savedItem ? savedItem.vId : 'null'})" class="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between cursor-pointer btn-press active:bg-teal-50/60 hover:border-teal-200 transition-all shadow-2xs">
+                    <div class="flex items-center gap-3">
+                        ${badgeHTML(tbn(p.id))}
+                        <span class="font-bold text-[14px] text-gray-800">${p.name}</span>
+                    </div>
+                    ${resumeInfo}
                 </div>`;
             });
-            document.getElementById('para-list').innerHTML = h;
+            container.innerHTML = h;
+        }
+
+        // --- RECENT HISTORY & EXACT RESUME ENGINE ---
+        // Automatically keeps recent items (max 12 FIFO) + allows Manual Delete & Clear All + saves exact Ayah position
+        function saveHist(id, type, aNum = 1, vId = null, vKeyName = '') {
+            let hist = safeStorage.get('qh_final_v2', []);
+            hist = hist.filter(h => !(h.id === id && h.type === type));
+            hist.unshift({
+                id,
+                type,
+                aNum: aNum || 1,
+                vId: vId || null,
+                vKeyName: vKeyName || '',
+                updatedAt: Date.now()
+            });
+            // Keep max 12 items automatically (FIFO auto-delete oldest)
+            if (hist.length > 12) hist = hist.slice(0, 12);
+            safeStorage.set('qh_final_v2', hist);
+            updateRecentCountBadge(hist.length);
+            renderQuickResumeBanner();
+        }
+
+        function deleteHistoryItem(id, type, event) {
+            if (event) event.stopPropagation();
+            let hist = safeStorage.get('qh_final_v2', []);
+            hist = hist.filter(h => !(h.id === id && h.type === type));
+            safeStorage.set('qh_final_v2', hist);
+            loadHist();
+            renderSurahs(state.surahs);
+            renderParas(state.paras);
+            renderQuickResumeBanner();
+            showToast('রিসেন্ট তালিকা থেকে মুছে ফেলা হয়েছে');
+        }
+
+        function clearAllHistory() {
+            safeStorage.set('qh_final_v2', []);
+            loadHist();
+            renderSurahs(state.surahs);
+            renderParas(state.paras);
+            renderQuickResumeBanner();
+            showToast('সব রিসেন্ট হিস্ট্রি মুছে ফেলা হয়েছে');
+        }
+
+        function updateRecentCountBadge(count) {
+            const badge = document.getElementById('recent-count-badge');
+            if (count > 0) {
+                badge.textContent = tbn(count);
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderQuickResumeBanner() {
+            const banner = document.getElementById('quick-resume-banner');
+            const hist = safeStorage.get('qh_final_v2', []);
+            if (!hist.length || !state.surahs.length) {
+                banner.classList.add('hidden');
+                return;
+            }
+            const last = hist[0];
+            const item = last.type === 'surah'
+                ? state.surahs.find(s => s.id === last.id)
+                : state.paras.find(p => p.id === last.id);
+            if (!item) {
+                banner.classList.add('hidden');
+                return;
+            }
+
+            const title = last.type === 'surah' ? getBanglaSurahTitle(item) : item.name;
+            const ayahLabel = last.vKeyName ? last.vKeyName : `আয়াত ${tbn(last.aNum || 1)}`;
+
+            banner.classList.remove('hidden');
+            banner.innerHTML = `
+                <div onclick="openRdr(${last.id}, '${last.type}', ${last.aNum || 1}, ${last.vId || 'null'})" class="bg-gradient-to-r from-teal-700 to-teal-500 text-white rounded-2xl p-3.5 flex items-center justify-between shadow-md cursor-pointer btn-press">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 fill-current text-white ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                        <div class="truncate">
+                            <span class="text-[10px] uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full font-semibold">যেখানে থেমেছিলেন সেখান থেকে শুরু করুন</span>
+                            <h4 class="font-bold text-[15px] mt-1 truncate">${title} • ${ayahLabel}</h4>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-white/80 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
+                </div>
+            `;
         }
 
         function loadHist() {
-            let hist = JSON.parse(localStorage.getItem('qh_final') || '[]');
+            const hist = safeStorage.get('qh_final_v2', []);
             const list = document.getElementById('history-list');
             const empty = document.getElementById('empty-history');
-            if(!hist.length) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            const header = document.getElementById('history-header');
+
+            updateRecentCountBadge(hist.length);
+
+            if (!hist.length) {
+                list.innerHTML = '';
+                empty.classList.remove('hidden');
+                header.classList.add('hidden');
+                return;
+            }
+
             empty.classList.add('hidden');
+            header.classList.remove('hidden');
+
             let h = '';
             hist.forEach((x) => {
-                const item = x.type === 'surah' ? state.surahs.find(s => s.id === x.id) : state.paras.find(p => p.id === x.id);
-                if(!item) return;
+                const item = x.type === 'surah'
+                    ? state.surahs.find(s => s.id === x.id)
+                    : state.paras.find(p => p.id === x.id);
+                if (!item) return;
+
+                const title = x.type === 'surah' ? getBanglaSurahTitle(item) : item.name;
+                const sub = x.type === 'surah' ? item.translated_name.name : 'পারা তিলাওয়াত';
+                const resumeBadgeText = x.vKeyName ? `${x.vKeyName} থেকে চালু হবে` : `আয়াত ${tbn(x.aNum || 1)} থেকে চালু হবে`;
+
                 h += `
-                <div onclick="openRdr(${item.id}, '${x.type}')" class="bg-white rounded-[10px] border border-gray-100/80 p-2.5 flex items-center gap-3 cursor-pointer btn-press active:bg-teal-50 transition-colors">
-                    ${badgeHTML(tbn(item.id))}
-                    <div class="flex flex-col">
-                        <span class="font-bold text-[14px]">${x.type === 'surah' ? (item.name_complex || item.name_arabic) : item.name}</span>
-                        <span class="text-[11px] text-gray-400 mt-0.5">${x.type === 'surah' ? item.translated_name.name : 'পারা'}</span>
+                <div onclick="openRdr(${item.id}, '${x.type}', ${x.aNum || 1}, ${x.vId || 'null'})" class="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between cursor-pointer btn-press active:bg-teal-50/60 shadow-2xs">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        ${badgeHTML(tbn(item.id))}
+                        <div class="flex flex-col min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-[14px] text-gray-800 truncate">${title}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                <span class="text-[11px] text-gray-400">${sub}</span>
+                                <span class="text-[11px] font-semibold text-teal bg-teal-50 border border-teal-100 px-2 py-0.2 rounded-md inline-flex items-center gap-1">
+                                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    ${resumeBadgeText}
+                                </span>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Manual Delete Button -->
+                    <button onclick="deleteHistoryItem(${item.id}, '${x.type}', event)" class="p-2 ml-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0" title="ডিলিট করুন" aria-label="ডিলিট করুন">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </button>
                 </div>`;
             });
             list.innerHTML = h;
         }
 
-        function saveHist(id, type) {
-            let hist = JSON.parse(localStorage.getItem('qh_final') || '[]');
-            hist = hist.filter(h => h.id !== id || h.type !== type);
-            hist.unshift({id, type}); if(hist.length > 8) hist.pop();
-            localStorage.setItem('qh_final', JSON.stringify(hist));
-        }
-
-        // --- Data Fetch Engine (Pagination Loop) ---
+        // --- Data Fetch Engine (Pagination + Full Surah Context inside Paras) ---
         async function fetchChap(id, type) {
-            const meta = type === 'surah' ? state.surahs.find(s=>s.id===id) : state.paras.find(p=>p.id===id);
+            const meta = type === 'surah'
+                ? state.surahs.find(s => s.id === id)
+                : state.paras.find(p => p.id === id);
+
             let vs = [], p = 1, tP = 1;
             const ep = type === 'surah' ? `verses/by_chapter/${id}` : `verses/by_juz/${id}`;
+
             while (p <= tP) {
-                const res = await fetch(`${API}/${ep}?language=bn&words=false&translations=161&fields=text_uthmani&audio=7&per_page=150&page=${p}`);
-                if(!res.ok) break;
+                const res = await fetch(`${API}/${ep}?language=bn&words=false&translations=161&fields=text_uthmani,verse_key&audio=7&per_page=150&page=${p}`);
+                if (!res.ok) throw new Error('Network response error');
                 const d = await res.json();
                 vs = vs.concat(d.verses);
-                tP = d.pagination.total_pages; p++;
+                tP = d.pagination.total_pages || 1;
+                p++;
             }
-            return vs.map((v, idx) => ({
-                id: v.id, aNum: v.verse_number, tAr: v.text_uthmani, tBn: v.translations[0].text,
-                url: v.audio?.url ? (v.audio.url.startsWith('//') ? 'https:'+v.audio.url : (v.audio.url.startsWith('http') ? v.audio.url : 'https://verses.quran.com/'+v.audio.url)) : null,
-                sName: type === 'surah' ? (meta.name_complex || meta.name_arabic) : meta.name, 
-                sId: id, type: type
-            })).filter(v => v.url);
+
+            return vs.map((v) => {
+                const chapterNum = v.verse_key ? parseInt(v.verse_key.split(':')[0], 10) : id;
+                const chapObj = state.surahs.find(s => s.id === chapterNum);
+                const chapName = chapObj ? getBanglaSurahTitle(chapObj) : (meta ? meta.name : '');
+
+                let cleanUrl = null;
+                if (v.audio && v.audio.url) {
+                    if (v.audio.url.startsWith('//')) cleanUrl = 'https:' + v.audio.url;
+                    else if (v.audio.url.startsWith('http')) cleanUrl = v.audio.url;
+                    else cleanUrl = 'https://verses.quran.com/' + v.audio.url.replace(/^\/+/, '');
+                }
+
+                return {
+                    id: v.id,
+                    vKey: v.verse_key || `${id}:${v.verse_number}`,
+                    chapId: chapterNum,
+                    chapName: chapName,
+                    aNum: v.verse_number,
+                    tAr: v.text_uthmani,
+                    tBn: (v.translations && v.translations[0]) ? v.translations[0].text : '',
+                    url: cleanUrl,
+                    sName: type === 'surah' ? chapName : `${meta.name} (${chapName})`,
+                    sId: id,
+                    type: type
+                };
+            }).filter(v => v.url);
         }
 
         function updateReaderHeader(id, type) {
-            state.uId = id; state.uType = type;
-            const meta = type === 'surah' ? state.surahs.find(s=>s.id===id) : state.paras.find(p=>p.id===id);
-            document.getElementById('header-title').textContent = type === 'surah' ? (meta.name_complex || meta.name_arabic) : meta.name;
-            document.getElementById('reader-title').textContent = type === 'surah' ? (meta.name_complex || meta.name_arabic) : meta.name;
-            document.getElementById('reader-subtitle').textContent = type === 'surah' ? meta.translated_name.name : 'আল কুরআন';
+            state.uId = id;
+            state.uType = type;
+            const meta = type === 'surah'
+                ? state.surahs.find(s => s.id === id)
+                : state.paras.find(p => p.id === id);
+
+            if (!meta) return;
+
+            const title = type === 'surah' ? getBanglaSurahTitle(meta) : meta.name;
+            document.getElementById('header-title').textContent = title;
+            document.getElementById('reader-title').textContent = title;
+            document.getElementById('reader-subtitle').textContent = type === 'surah' ? meta.translated_name.name : 'সম্পূর্ণ পারা তিলাওয়াত';
             document.getElementById('reader-revelation').textContent = type === 'surah' ? (meta.revelation_place === 'makkah' ? 'মাক্কী' : 'মাদানী') : '';
             document.getElementById('reader-count').textContent = type === 'surah' ? `${tbn(meta.verses_count)} আয়াত` : '';
             document.getElementById('reader-revelation').style.display = type === 'para' ? 'none' : 'block';
             document.getElementById('reader-count').style.display = type === 'para' ? 'none' : 'block';
         }
 
-        async function openRdr(id, type) {
-            resetActivityTimer();
-            saveHist(id, type);
-            
+        // Open Reader and Automatically Start/Resume from Exact Saved Verse
+        async function openRdr(id, type, targetAyahNum = 1, targetVerseId = null) {
+            const reqId = ++state.activeRequestId;
+
+            // Unlock Audio & Keep-Alive synchronously inside user click event so mobile browser never blocks playback after await!
+            startBackgroundKeepAlive();
+            requestWakeLock();
+
             document.getElementById('main-container').classList.add('hidden');
             document.getElementById('reader-container').classList.remove('hidden');
             document.getElementById('btn-back').classList.remove('hidden');
             updateReaderHeader(id, type);
 
+            // Push state for mobile back button support inside sub-page
+            try { history.pushState({ reader: true }, ''); } catch (e) {}
+
+            // If this exact chapter is already loaded in the queue, jump directly without re-fetching!
+            const existingChapVerses = state.queue.filter(v => v.sId === id && v.type === type);
+            if (existingChapVerses.length > 0) {
+                renderVerses(existingChapVerses);
+                let targetIdx = findTargetQueueIndex(id, type, targetAyahNum, targetVerseId);
+                if (targetIdx === -1) targetIdx = state.queue.indexOf(existingChapVerses[0]);
+                playTrack(targetIdx);
+                return;
+            }
+
             const con = document.getElementById('verses-container');
             const ldr = document.getElementById('reader-loading');
-            con.innerHTML = ''; ldr.classList.remove('hidden');
-            
+            con.innerHTML = '';
+            ldr.classList.remove('hidden');
+
             try {
-                // Fetch the requested chapter & Replace current queue
-                state.queue = await fetchChap(id, type);
+                const fetchedVerses = await fetchChap(id, type);
+                // Ignore if user navigated away or clicked another Surah while loading
+                if (reqId !== state.activeRequestId) return;
+
+                state.queue = fetchedVerses;
                 state.pIdx = -1;
                 ldr.classList.add('hidden');
-                
-                // Render the UI
-                renderVerses(state.queue.filter(v => v.sId === id && v.type === type));
-                
-                // 1. AUTO PLAY FIRST TRACK INSTANTLY
+
+                renderVerses(state.queue);
+
+                // Find exact verse to resume from (or start at 0)
+                let startIdx = findTargetQueueIndex(id, type, targetAyahNum, targetVerseId);
+                if (startIdx < 0) startIdx = 0;
+
                 if (state.queue.length > 0) {
-                    playTrack(0);
+                    playTrack(startIdx);
+                    if (startIdx > 0) {
+                        const resumeTrack = state.queue[startIdx];
+                        showToast(`${resumeTrack.chapName} • আয়াত ${tbn(resumeTrack.aNum)} থেকে চালু হয়েছে`);
+                    }
                 }
-                
-                // 2. BACKGROUND PRELOAD THE NEXT CHAPTER
+
+                // Proactively preload the next chapter in background for unlimited playback
                 preloadNextChapterSilently();
 
             } catch (e) {
+                if (reqId !== state.activeRequestId) return;
                 ldr.classList.add('hidden');
-                con.innerHTML = `<div class="text-red-500 text-[12px] text-center bg-red-50 p-3 rounded mt-4">ডেটা লোড ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।</div>`;
+                con.innerHTML = `
+                    <div class="text-red-600 text-[13px] text-center bg-red-50 p-4 rounded-xl border border-red-100 mt-4">
+                        <p class="font-semibold">ডেটা লোড ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।</p>
+                        <button onclick="openRdr(${id}, '${type}', ${targetAyahNum}, ${targetVerseId})" class="mt-2.5 bg-red-500 text-white px-4 py-1.5 rounded-lg text-[12px] font-semibold">আবার চেষ্টা করুন</button>
+                    </div>`;
             }
         }
 
-        // Silent preloading for Gapless Sync
-        async function preloadNextChapterSilently() {
-            if(state.isFetching || state.queue.length === 0) return;
-            state.isFetching = true;
-            
-            const currentLastTrack = state.queue[state.queue.length - 1];
-            const nextId = currentLastTrack.sId + 1;
-            const limit = currentLastTrack.type === 'surah' ? 114 : 30;
-            
-            if (nextId <= limit) {
-                try {
-                    const nextChapData = await fetchChap(nextId, currentLastTrack.type);
-                    // Prevent accidental duplication
-                    const newItems = nextChapData.filter(n => !state.queue.some(q => q.id === n.id));
-                    state.queue = state.queue.concat(newItems);
-                } catch(e) {}
+        function findTargetQueueIndex(id, type, targetAyahNum, targetVerseId) {
+            if (targetVerseId) {
+                const byId = state.queue.findIndex(v => v.sId === id && v.type === type && v.id === targetVerseId);
+                if (byId !== -1) return byId;
             }
-            state.isFetching = false;
+            if (targetAyahNum && targetAyahNum > 1) {
+                const byAyah = state.queue.findIndex(v => v.sId === id && v.type === type && v.aNum === targetAyahNum);
+                if (byAyah !== -1) return byAyah;
+            }
+            return state.queue.findIndex(v => v.sId === id && v.type === type);
+        }
+
+        // Silent Preloading of Next Chapters (Loops 114 -> 1 and 30 -> 1 for truly Unlimited Playback)
+        async function preloadNextChapterSilently() {
+            if (state.isFetching || state.queue.length === 0) return;
+            state.isFetching = true;
+
+            try {
+                const currentLastTrack = state.queue[state.queue.length - 1];
+                const limit = currentLastTrack.type === 'surah' ? 114 : 30;
+                // Wrap around to 1 after 114 (or 30) so playback never hits a wall!
+                const nextId = currentLastTrack.sId >= limit ? 1 : currentLastTrack.sId + 1;
+
+                // Only fetch if not already queued
+                const alreadyInQueue = state.queue.some(q => q.sId === nextId && q.type === currentLastTrack.type);
+                if (!alreadyInQueue) {
+                    const nextChapData = await fetchChap(nextId, currentLastTrack.type);
+                    const newItems = nextChapData.filter(n => !state.queue.some(q => q.id === n.id && q.sId === n.sId));
+                    state.queue = state.queue.concat(newItems);
+                }
+            } catch (e) {
+                // Will retry automatically on next verse progression
+            } finally {
+                state.isFetching = false;
+            }
+        }
+
+        // Pre-buffer next 2 audio files in hidden <audio> elements so track transition has 0ms network delay when screen is off
+        function prebufferUpcomingTracks(currentIndex) {
+            const next1 = state.queue[currentIndex + 1];
+            const next2 = state.queue[currentIndex + 2];
+
+            if (next1 && next1.url && preloadEl1.src !== next1.url) {
+                preloadEl1.src = next1.url;
+                preloadEl1.load();
+            }
+            if (next2 && next2.url && preloadEl2.src !== next2.url) {
+                preloadEl2.src = next2.url;
+                preloadEl2.load();
+            }
         }
 
         function renderVerses(list) {
             let h = '';
-            // CSS Bismillah Text - Reliable and beautiful
-            if(list.length > 0 && list[0].type === 'surah' && list[0].sId !== 1 && list[0].sId !== 9) {
-                h += `<div class="text-center mb-3 mt-3"><span class="arabic-text text-[24px] font-bold text-teal opacity-90">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span></div>`;
-            }
+            let lastChapId = null;
+
             list.forEach((v) => {
                 const gIdx = state.queue.indexOf(v);
+
+                // Show Surah Header & Bismillah when a new Surah starts (especially helpful inside Paras!)
+                if (v.chapId !== lastChapId) {
+                    if (v.type === 'para') {
+                        h += `
+                        <div class="bg-teal-50/80 border border-teal-100 rounded-xl py-2 px-3 text-center my-2">
+                            <span class="font-bold text-[13px] text-teal-700">সূরা ${v.chapName}</span>
+                        </div>`;
+                    }
+                    if (v.aNum === 1 && v.chapId !== 1 && v.chapId !== 9) {
+                        h += `
+                        <div class="text-center py-3 my-1 bg-white rounded-xl border border-gray-100/80">
+                            <span class="arabic-text text-[23px] font-bold text-teal opacity-95">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
+                        </div>`;
+                    }
+                    lastChapId = v.chapId;
+                }
+
+                const badgeText = v.type === 'para' ? `${tbn(v.chapId)}:${tbn(v.aNum)}` : tbn(v.aNum);
+
                 h += `
-                <div id="vc-${gIdx}" onclick="playTrack(${gIdx})" class="v-card bg-white rounded-xl border border-gray-100 p-3.5 cursor-pointer relative overflow-hidden mb-1">
+                <div id="vc-${gIdx}" onclick="playTrack(${gIdx})" class="v-card bg-white rounded-2xl border border-gray-100 p-3.5 cursor-pointer relative overflow-hidden shadow-2xs">
                     <div class="flex justify-between items-start gap-3 relative z-10">
-                        <div class="w-7 h-7 rounded-full border border-teal-100 flex items-center justify-center text-[10px] font-bold text-teal bg-teal-50 shrink-0 mt-1">${tbn(v.aNum)}</div>
+                        <div class="ayah-badge min-w-[28px] h-7 px-1.5 rounded-full border border-teal-100 flex items-center justify-center text-[10px] font-bold text-teal bg-teal-50 shrink-0 mt-1 transition-colors">
+                            ${badgeText}
+                        </div>
                         <div class="text-right flex-1">
-                            <p class="arabic-text text-[20px] font-bold text-gray-900">${v.tAr}</p>
+                            <p class="arabic-text text-[22px] font-bold text-gray-900 select-text">${v.tAr}</p>
                         </div>
                     </div>
-                    <div class="pt-2 mt-2 border-t border-gray-50 relative z-10">
-                        <p class="text-gray-600 text-[13px] leading-relaxed">${v.tBn.replace(/<sup.*?<\/sup>/g, '')}</p>
+                    <div class="pt-2.5 mt-2.5 border-t border-gray-50 relative z-10">
+                        <p class="text-gray-600 text-[13.5px] leading-relaxed select-text">${v.tBn.replace(/<sup.*?<\/sup>/g, '')}</p>
                     </div>
                 </div>`;
             });
             document.getElementById('verses-container').innerHTML = h;
         }
 
-        // --- GAPLESS AUDIO ENGINE ---
+        // --- UNLIMITED BACKGROUND AUDIO ENGINE ---
         function setupAudioEngine() {
-            audioEl.addEventListener('ended', () => playNext(false));
-            audioEl.addEventListener('error', () => { 
-                if(state.isPlaying) {
-                    dom.status.classList.remove('hidden'); dom.status.textContent = 'নেটওয়ার্ক এরর...';
-                    setTimeout(() => playNext(false), 2000); 
+            // Immediate synchronous transition on 'ended'
+            audioEl.addEventListener('ended', () => {
+                // Check if "Stop at end of current Surah/Para" sleep mode is enabled
+                if (state.sleepEndOfChapter && state.pIdx >= 0 && state.pIdx + 1 < state.queue.length) {
+                    const curr = state.queue[state.pIdx];
+                    const next = state.queue[state.pIdx + 1];
+                    if (curr.sId !== next.sId) {
+                        triggerSleepShutdown('সূরা/পারা শেষ হওয়ায় স্লিপ টাইমার তিলাওয়াত বন্ধ করেছে');
+                        return;
+                    }
+                }
+                playNext(false);
+            });
+
+            // Check Sleep Timer inside timeupdate (fires reliably even when phone screen is locked!)
+            audioEl.addEventListener('timeupdate', () => {
+                if (audioEl.duration && !isNaN(audioEl.duration)) {
+                    const pct = Math.min(100, (audioEl.currentTime / audioEl.duration) * 100);
+                    dom.progress.style.width = `${pct}%`;
+                }
+                checkSleepTimerExpiration();
+            });
+
+            audioEl.addEventListener('error', () => {
+                if (state.isPlaying) {
+                    dom.status.classList.remove('hidden');
+                    dom.status.textContent = 'পুনরায় চেষ্টা করা হচ্ছে...';
+                    setTimeout(() => {
+                        if (state.isPlaying) {
+                            audioEl.load();
+                            audioEl.play().catch(() => playNext(false));
+                        }
+                    }, 1200);
                 }
             });
 
-            audioEl.addEventListener('waiting', () => { dom.status.classList.remove('hidden'); });
-            audioEl.addEventListener('playing', () => { dom.status.classList.add('hidden'); });
+            audioEl.addEventListener('waiting', () => {
+                dom.status.textContent = 'লোডিং...';
+                dom.status.classList.remove('hidden');
+            });
+
+            audioEl.addEventListener('playing', () => {
+                dom.status.classList.add('hidden');
+                dom.playingDot.classList.add('pulse-dot');
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.playbackState = 'playing';
+                }
+            });
 
             audioEl.addEventListener('play', () => {
                 state.isPlaying = true;
-                resetActivityTimer(); // Keep screen alive
-                dom.iPlay.classList.add('hidden'); dom.iPause.classList.remove('hidden');
+                startBackgroundKeepAlive();
+                requestWakeLock();
+                dom.iPlay.classList.add('hidden');
+                dom.iPause.classList.remove('hidden');
             });
+
             audioEl.addEventListener('pause', () => {
-                state.isPlaying = false;
-                dom.iPlay.classList.remove('hidden'); dom.iPause.classList.add('hidden');
+                // Note: When a track finishes naturally, browser fires 'pause' right before 'ended'.
+                // Only mark state.isPlaying = false if the track has NOT ended.
+                if (!audioEl.ended) {
+                    state.isPlaying = false;
+                    dom.iPlay.classList.remove('hidden');
+                    dom.iPause.classList.add('hidden');
+                    dom.playingDot.classList.remove('pulse-dot');
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.playbackState = 'paused';
+                    }
+                }
             });
 
             if ('mediaSession' in navigator) {
-                navigator.mediaSession.setActionHandler('play', togglePlayPause);
-                navigator.mediaSession.setActionHandler('pause', togglePlayPause);
-                navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-                navigator.mediaSession.setActionHandler('nexttrack', () => playNext(true));
+                try {
+                    navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+                    navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                    navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+                    navigator.mediaSession.setActionHandler('nexttrack', () => playNext(true));
+                } catch (e) {}
             }
         }
 
         function playTrack(idx) {
             if (idx < 0 || idx >= state.queue.length) return;
-            state.pIdx = idx; 
+
+            state.pIdx = idx;
             const t = state.queue[idx];
-            
-            // Check if we shifted to a new chapter automatically (e.g. Fatiha to Baqarah)
-            if (t.sId !== state.uId && document.visibilityState === 'visible') {
+
+            // Save exact verse position in Recent History immediately so user never loses progress
+            const vKeyLabel = t.type === 'para' ? `${t.chapName} ${tbn(t.aNum)}` : `আয়াত ${tbn(t.aNum)}`;
+            saveHist(t.sId, t.type, t.aNum, t.id, vKeyLabel);
+
+            // If automatic playback crossed into a new Surah/Para, update Reader view if open
+            const isReaderOpen = !document.getElementById('reader-container').classList.contains('hidden');
+            if (isReaderOpen && (t.sId !== state.uId || t.type !== state.uType) && document.visibilityState === 'visible') {
                 updateReaderHeader(t.sId, t.type);
                 renderVerses(state.queue.filter(v => v.sId === t.sId && v.type === t.type));
             }
 
+            dom.progress.style.width = '0%';
+            audioEl.volume = 1.0;
             audioEl.src = t.url;
-            audioEl.play().catch(e => console.log(e));
-            
-            updateUI(t, true); // Update Highlight and Center Screen
-            
-            // Fetch next chapter proactively if we are close to the end (20 verses left)
-            if (state.queue.length - idx < 20) preloadNextChapterSilently();
+
+            const playPromise = audioEl.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Retry once if browser needed a moment
+                    setTimeout(() => {
+                        if (state.isPlaying) audioEl.play().catch(() => {});
+                    }, 150);
+                });
+            }
+
+            // Prebuffer next 2 verses in background immediately
+            prebufferUpcomingTracks(idx);
+
+            // Update UI & Lock Screen Media Notification
+            updateUI(t, isReaderOpen);
+
+            // Keep at least 25 verses queued ahead at all times
+            if (state.queue.length - idx < 25) {
+                preloadNextChapterSilently();
+            }
         }
 
         function togglePlayPause() {
-            if (state.pIdx === -1 && state.queue.length > 0) return playTrack(0);
-            if (state.isPlaying) audioEl.pause(); else audioEl.play().catch(e=>console.log(e));
-            resetActivityTimer();
+            if (state.pIdx === -1 && state.queue.length > 0) {
+                return playTrack(0);
+            }
+            if (state.isPlaying) {
+                state.isPlaying = false;
+                audioEl.pause();
+                stopBackgroundKeepAlive();
+                releaseWakeLock();
+            } else {
+                state.isPlaying = true;
+                startBackgroundKeepAlive();
+                requestWakeLock();
+                audioEl.play().catch(() => {});
+            }
         }
 
         function playNext(userTriggered) {
             if (state.pIdx + 1 < state.queue.length) {
                 playTrack(state.pIdx + 1);
-            } else if (!userTriggered) {
-                // Stop completely if queue is empty
-                state.isPlaying = false;
-                dom.iPlay.classList.remove('hidden'); dom.iPause.classList.add('hidden');
-                releaseWakeLock(); // Allow screen to sleep
+            } else {
+                // If queue somehow ran out, load next chapter immediately and continue
+                preloadNextChapterSilently().then(() => {
+                    if (state.pIdx + 1 < state.queue.length) {
+                        playTrack(state.pIdx + 1);
+                    } else if (!userTriggered) {
+                        state.isPlaying = false;
+                        stopBackgroundKeepAlive();
+                        releaseWakeLock();
+                        dom.iPlay.classList.remove('hidden');
+                        dom.iPause.classList.add('hidden');
+                    }
+                });
             }
         }
 
         function playPrev() {
-            if (state.pIdx - 1 >= 0) playTrack(state.pIdx - 1);
+            if (state.pIdx - 1 >= 0) {
+                playTrack(state.pIdx - 1);
+            }
+        }
+
+        function scrollToCurrentPlayingVerse() {
+            if (state.pIdx < 0 || !state.queue[state.pIdx]) return;
+            const t = state.queue[state.pIdx];
+            const isReaderOpen = !document.getElementById('reader-container').classList.contains('hidden');
+            if (!isReaderOpen) {
+                openRdr(t.sId, t.type, t.aNum, t.id);
+            } else {
+                const c = document.getElementById(`vc-${state.pIdx}`);
+                if (c) c.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
         }
 
         function updateUI(t, doScroll) {
-            dom.p.classList.remove('translate-y-[150%]');
+            dom.p.classList.remove('translate-y-[160%]');
             document.getElementById('player-title').textContent = t.sName;
             document.getElementById('player-subtitle').textContent = `আয়াত ${tbn(t.aNum)}`;
             dom.status.classList.add('hidden');
 
-            // Reset all styles
-            document.querySelectorAll('.v-card').forEach(el => el.classList.remove('active-card'));
-            
-            // Apply Highlight Style
+            // Highlight active verse card
+            document.querySelectorAll('.v-card.active-card').forEach(el => el.classList.remove('active-card'));
             const c = document.getElementById(`vc-${state.pIdx}`);
             if (c) {
                 c.classList.add('active-card');
-                
-                // AUTO CENTER SCROLL
-                if(doScroll && document.visibilityState === 'visible') {
+                if (doScroll && document.visibilityState === 'visible') {
                     c.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
             }
 
-            if('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({ title: `আয়াত ${tbn(t.aNum)}`, artist: t.sName });
+            // Lock Screen MediaMetadata for Android/iOS Notification Center
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: `${t.chapName} - আয়াত ${tbn(t.aNum)}`,
+                        artist: 'আল কুরআন তিলাওয়াত',
+                        album: t.sName
+                    });
+                } catch (e) {}
             }
         }
+
+        // --- SLEEP TIMER ENGINE (স্লিপ টাইমার ও ম্যানুয়াল ইনপুট) ---
+        function openSleepModal() {
+            document.getElementById('sleep-modal').classList.remove('hidden');
+            document.getElementById('custom-sleep-error').classList.add('hidden');
+            updateSleepUI();
+        }
+
+        function closeSleepModal() {
+            document.getElementById('sleep-modal').classList.add('hidden');
+        }
+
+        function setSleepTimer(minutes) {
+            const mins = parseFloat(minutes);
+            if (isNaN(mins) || mins <= 0) return;
+
+            state.sleepEndOfChapter = false;
+            state.sleepEndTime = Date.now() + Math.round(mins * 60 * 1000);
+
+            clearInterval(state.sleepInterval);
+            state.sleepInterval = setInterval(checkSleepTimerExpiration, 1000);
+
+            updateSleepUI();
+            closeSleepModal();
+            showToast(`স্লিপ টাইমার ${tbn(mins)} মিনিটের জন্য চালু হয়েছে`);
+        }
+
+        function setSleepEndOfChapter() {
+            state.sleepEndTime = null;
+            state.sleepEndOfChapter = true;
+            clearInterval(state.sleepInterval);
+            updateSleepUI();
+            closeSleepModal();
+            showToast('চলমান সূরা/পারা শেষ হলে তিলাওয়াত অটোমেটিক বন্ধ হবে');
+        }
+
+        function applyCustomSleepTimer() {
+            const input = document.getElementById('custom-sleep-input');
+            const err = document.getElementById('custom-sleep-error');
+            const rawVal = fromBnDigits(input.value.trim());
+            const mins = parseInt(rawVal, 10);
+
+            if (isNaN(mins) || mins < 1 || mins > 720) {
+                err.classList.remove('hidden');
+                return;
+            }
+            err.classList.add('hidden');
+            input.value = '';
+            setSleepTimer(mins);
+        }
+
+        function addSleepMinutes(extraMins) {
+            if (state.sleepEndTime) {
+                state.sleepEndTime += extraMins * 60 * 1000;
+                updateSleepUI();
+                showToast(`টাইমারে আরও ${tbn(extraMins)} মিনিট যোগ করা হয়েছে`);
+            }
+        }
+
+        function cancelSleepTimer() {
+            state.sleepEndTime = null;
+            state.sleepEndOfChapter = false;
+            clearInterval(state.sleepInterval);
+            audioEl.volume = 1.0;
+            updateSleepUI();
+            showToast('স্লিপ টাইমার বন্ধ করা হয়েছে');
+        }
+
+        function checkSleepTimerExpiration() {
+            if (!state.sleepEndTime) return;
+            const remainingMs = state.sleepEndTime - Date.now();
+
+            // Gentle volume fade-out during the last 5 seconds before sleep
+            if (remainingMs > 0 && remainingMs <= 5000 && state.isPlaying) {
+                audioEl.volume = Math.max(0.1, remainingMs / 5000);
+            }
+
+            if (remainingMs <= 0) {
+                triggerSleepShutdown('স্লিপ টাইমারের সময় শেষ হওয়ায় তিলাওয়াত বন্ধ হয়েছে');
+                return;
+            }
+            updateSleepUI();
+        }
+
+        function triggerSleepShutdown(message) {
+            state.sleepEndTime = null;
+            state.sleepEndOfChapter = false;
+            clearInterval(state.sleepInterval);
+
+            // Pause playback & release background locks
+            state.isPlaying = false;
+            audioEl.pause();
+            audioEl.volume = 1.0;
+            stopBackgroundKeepAlive();
+            releaseWakeLock();
+
+            dom.iPlay.classList.remove('hidden');
+            dom.iPause.classList.add('hidden');
+            dom.playingDot.classList.remove('pulse-dot');
+
+            // Save exact verse where sleep timer stopped so user can resume seamlessly next time
+            if (state.pIdx >= 0 && state.queue[state.pIdx]) {
+                const t = state.queue[state.pIdx];
+                const vKeyLabel = t.type === 'para' ? `${t.chapName} ${tbn(t.aNum)}` : `আয়াত ${tbn(t.aNum)}`;
+                saveHist(t.sId, t.type, t.aNum, t.id, vKeyLabel);
+            }
+
+            updateSleepUI();
+            showToast(message);
+        }
+
+        function formatRemainingTime(ms) {
+            const totalSec = Math.max(0, Math.ceil(ms / 1000));
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            const pad = n => (n < 10 ? '0' + n : '' + n);
+            if (hrs > 0) {
+                return tbn(`${hrs}:${pad(mins)}:${pad(secs)}`);
+            }
+            return tbn(`${pad(mins)}:${pad(secs)}`);
+        }
+
+        function updateSleepUI() {
+            const headerBtn = document.getElementById('header-sleep-btn');
+            const headerText = document.getElementById('header-sleep-text');
+            const playerBadge = document.getElementById('player-sleep-badge');
+            const playerDot = document.getElementById('player-sleep-dot');
+            const activeBox = document.getElementById('sleep-active-box');
+            const modalCountdown = document.getElementById('sleep-modal-countdown');
+            const endChapBtn = document.getElementById('btn-sleep-end-chap');
+
+            if (state.sleepEndTime) {
+                const rem = state.sleepEndTime - Date.now();
+                const formatted = formatRemainingTime(rem);
+
+                headerBtn.className = "btn-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-teal text-white shadow-xs";
+                headerText.textContent = formatted;
+
+                playerBadge.textContent = `🌙 ${formatted}`;
+                playerBadge.classList.remove('hidden');
+                playerDot.classList.remove('hidden');
+
+                activeBox.classList.remove('hidden');
+                modalCountdown.textContent = formatted;
+                endChapBtn.classList.remove('border-teal', 'bg-teal-50', 'text-teal');
+            } else if (state.sleepEndOfChapter) {
+                headerBtn.className = "btn-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-teal text-white shadow-xs";
+                headerText.textContent = 'সূরা শেষ পর্যন্ত';
+
+                playerBadge.textContent = '🌙 সূরা শেষ পর্যন্ত';
+                playerBadge.classList.remove('hidden');
+                playerDot.classList.remove('hidden');
+
+                activeBox.classList.remove('hidden');
+                modalCountdown.textContent = 'চলমান সূরা শেষ পর্যন্ত';
+                endChapBtn.classList.add('border-teal', 'bg-teal-50', 'text-teal');
+            } else {
+                headerBtn.className = "btn-press flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-700 border border-gray-200/70";
+                headerText.textContent = 'স্লিপ টাইমার';
+
+                playerBadge.classList.add('hidden');
+                playerDot.classList.add('hidden');
+                activeBox.classList.add('hidden');
+                endChapBtn.classList.remove('border-teal', 'bg-teal-50', 'text-teal');
+            }
+        }
+
+        // Close Sleep Modal when clicking outside backdrop
+        document.getElementById('sleep-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'sleep-modal') closeSleepModal();
+        });
 
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
-
-
-
